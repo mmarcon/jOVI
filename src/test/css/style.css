@@ -1,0 +1,56 @@
+/*
+ * Color palette: E6E2AF,A7A37E,EFECCA,046380,002F2F
+ */
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,600);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
+
+body {
+    font-family: 'Open Sans', helvetica, sans-serif;
+    background-color: #E6E2AF;
+    font-weight: 300;
+}
+
+header {
+    width: 90%;
+    margin: 20px auto;
+}
+
+h1 {
+    text-align: right;
+	font-weight: 800;
+	font-size: 72px;
+	color: #046380;
+	margin: 10px 0;
+	-moz-text-shadow: 0 -1px 0 #333;
+	-webkit-text-shadow: 0 -1px 0 #333;
+	text-shadow: 0 -1px 0 #333;
+}
+
+#tests {
+    width: 520px;
+    margin: 20px auto;
+}
+
+.test h3 {
+    background-color: #A7A37E;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.test h3:hover {
+    background-color: #002F2F;
+}
+
+/* the following will always be the map container */
+.test div.map {
+    width: 500px;
+    height: 500px;
+    border: 5px solid #EFECCA;
+    margin: 10px auto;
+    border-radius: 4px;
+    box-shadow: 0 0 10px #A7A37E;
+    display: none;
+}
