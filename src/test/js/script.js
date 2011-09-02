@@ -40,15 +40,39 @@ $(function(){
                         }).jOVI ('setType', 'terrain');      //type can be map, satellite, terrain
     
     //5- Marker Events
-    var simpleMarker = getTestTemplate ('Marker Events', 'test-map-' + counter++).appendTo (container);
-    simpleMarker.children('.map').jOVI ({center: [40.716667, -74]})
-                                 .jOVI ('dropMarker', [40.716667, -74], {text: '?',
-                                                                         textColor: '#222',
-                                                                         fill: '#00ff7f',
-                                                                         click: function (event){
-                                                                            alert ('Clicked on marker!')
-                                                                         }})
-                                 .jOVI ('setType', 'satellite');
+    var em = getTestTemplate ('Marker Events', 'test-map-' + counter++).appendTo (container);
+    em.children('.map').jOVI ({center: [40.716667, -74]})
+                       .jOVI ('dropMarker', [40.716667, -74], {text: '?',
+                                                               textColor: '#222',
+                                                               fill: '#00ff7f',
+                                                               click: function (event){
+                                                               alert ('Clicked on marker! ' + event.target.myOwnParameter);
+                                                               },
+                                                               myOwnParameter: 'FOO'
+                                                               })
+                     .jOVI ('setType', 'satellite');
+    //6- Info Bubble
+    var ib = getTestTemplate ('Info Bubble', 'test-map-' + counter++).appendTo (container);
+    ib.children('.map').jOVI ({center: [40.716667, -74]})
+                                 .jOVI ('dropMarker', [40.716667, -74], {text: '0',
+                                                                         textColor: '#fff',
+                                                                         })
+                                 .jOVI ('setType', 'satellite')
+                                 .jOVI ('showInfoBubble', [40.716667, -74], {content: 'jOVI is pretty cool'});
+    //7- jQuery Obj Info Bubble
+    var jib = getTestTemplate ('Info Bubble with jQuery content', 'test-map-' + counter++).appendTo (container),
+    	content = $('<div/>');
+    	
+    $('<h5/>').text('New York City').appendTo (content);
+    $('<p/>').text('New York is the most populous city in the United States and the center of the New York Metropolitan Area, one of the most populous metropolitan areas in the world.').css({width: '200px'}).appendTo (content);
+    	
+    	
+    jib.children('.map').jOVI ({center: [40.716667, -74]})
+                                 .jOVI ('dropMarker', [40.716667, -74], {text: '0',
+                                                                         textColor: '#fff',
+                                                                         })
+                                 .jOVI ('setType', 'satellite')
+                                 .jOVI ('showInfoBubble', [40.716667, -74], {content: content});
 });
 
 function getTestTemplate (title, id) {

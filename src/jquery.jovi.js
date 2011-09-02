@@ -22,10 +22,28 @@
 */
 
 (function($) {
-    var _maps = {},
+    var 
+    	_maps = {},
         _counter = 0,
+        _eventProxy = function (event) {
+        	var handler = event.target [event.type];
+        	//For safety double check if the handler exists
+        	if ($.isFunction (handler)) {
+	        	var e = $.Event (event.type, {
+	        		originalEvent: event,
+	        		ovi: {
+	        			latitude: event.target.coordinate.latitude,
+	        			longitude: event.target.coordinate.latitude,
+	        			map: _maps [event.target.joviID]
+	        		},
+	        		target: event.target
+	        	});
+	        	handler.call (event.target.jovi, e);
+	        }
+        },
         _initMap = function(target, settings) {
-            var components = [], mapID;
+            var components = [],
+            	mapID;
             //Setup components based on settings
             if (settings.behavior) {
                 components.push(new ovi.mapsapi.map.component.Behavior());
@@ -61,7 +79,6 @@
                 }
                 components.push(new ovi.mapsapi.routing.component.RightClick());
             }
-            
             //See if we have a valid ID, otherwise generate one
             mapID = target.attr('id');
             if (!mapID) {
@@ -116,53 +133,68 @@
             });
         },
         dropMarker: function(where, options) {
-            var $this = $(this),
-                    defaultOptions = {
+            var self = this,
+        		mapID = $(self).attr('id'),
+                defaultOptions = {
                     text: '',
                     textColor: '#333333',
                     fill: '#ff6347',
                     stroke: '#333333',
                     shape: 'balloon',
-                    icon: null
-                },
+                    icon: undefined
+            	},
                 settings,
+                attribute,
                 markerListeners = {
-                	"click":      [options.click      || $.noop, false, null],
-                	"dblclick":   [options.dblclick   || $.noop, false, null],
-                	"mousemove":  [options.mousemove  || $.noop, false, null],
-                	"mouseover":  [options.mouseover  || $.noop, false, null],
-                	"mouseout":   [options.mouseout   || $.noop, false, null],
-                	"mouseenter": [options.mouseenter || $.noop, false, null],
-                	"mouseleave": [options.mouseleave || $.noop, false, null],
-                	"longpress":  [options.longpress  || $.noop, false, null],
-                	"dragstart":  [options.dragstart  || $.noop, false, null],
-                	"drag":       [options.drag       || $.noop, false, null],
-                	"dragend":    [options.dragend    || $.noop, false, null]
+                	"click":      [_eventProxy || $.noop, false, null],
+                	"dblclick":   [_eventProxy || $.noop, false, null],
+                	"mousemove":  [_eventProxy || $.noop, false, null],
+                	"mouseover":  [_eventProxy || $.noop, false, null],
+                	"mouseout":   [_eventProxy || $.noop, false, null],
+                	"mouseenter": [_eventProxy || $.noop, false, null],
+                	"mouseleave": [_eventProxy || $.noop, false, null],
+                	"longpress":  [_eventProxy || $.noop, false, null],
+                	"dragstart":  [_eventProxy || $.noop, false, null],
+                	"drag":       [_eventProxy || $.noop, false, null],
+                	"dragend":    [_eventProxy || $.noop, false, null]
                 };
             settings = $.extend({}, defaultOptions, options);
-
-            settings = {
-                text: settings.text,
-                textPen: {
-                    strokeColor: settings.textColor
-                },
-                pen: {
-                    strokeColor: settings.stroke
-                },
-                shape: settings.shape,
-                brush: {
-                    color: settings.fill
-                },
-                icon: settings.icon,
-                $name: $this.attr('id'),
-		        eventListener: markerListeners
-            };
+            
+            settings.textPen       = {strokeColor: settings.textColor};
+            settings.pen           = {strokeColor: settings.stroke};
+            settings.brush         = {color: settings.fill};
+            settings.jovi          = self;
+            settings.joviID        = mapID;
+			settings.eventListener = markerListeners;
+			
             if (settings.icon) {
-                _maps [$this.attr('id')].objects.add(new ovi.mapsapi.map.Marker(where, settings));
+                _maps [mapID].objects.add(new ovi.mapsapi.map.Marker(where, settings));
             }
             else {
-                _maps [$this.attr('id')].objects.add(new ovi.mapsapi.map.StandardMarker(where, settings));
+                _maps [mapID].objects.add(new ovi.mapsapi.map.StandardMarker(where, settings));
             }
+        },
+        showInfoBubble: function (where, options) {
+        	var self = this,
+        		mapID = $(self).attr('id'),
+        		defaultOptions = {
+                    content: ''
+            	},
+            	settings,
+            	bubbles;
+            settings = $.extend({}, defaultOptions, options);
+            if (settings.content) {
+            	if (settings.content.jquery) {
+            		//This is a little hack to fix word-wrap which is set to nowrap by the OVI framework
+            		settings.content.css ('white-space', 'normal');
+            		settings.content = $('<div/>').append(settings.content.clone()).html();
+            	}
+            }
+            else {
+            	settings.content = '';
+            }
+            bubbles = _maps [mapID].getComponentById('InfoBubbles') || _maps [mapID].addComponent(new ovi.mapsapi.map.component.InfoBubbles());
+            bubbles.addBubble(settings.content, new ovi.mapsapi.geo.Coordinate(where[0], where[1]));
         },
         setCenter: function(where, withAnimation) {
             var $this = $(this), animationType = withAnimation ? 'default' : 'none'
