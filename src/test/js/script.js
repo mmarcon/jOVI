@@ -38,6 +38,17 @@ $(function(){
                             searchManager: true,             //Right click  gives info on the location
                             routingManager: true             //Right click allows to show routes on the map
                         }).jOVI ('setType', 'terrain');      //type can be map, satellite, terrain
+    
+    //5- Marker Events
+    var simpleMarker = getTestTemplate ('Marker Events', 'test-map-' + counter++).appendTo (container);
+    simpleMarker.children('.map').jOVI ({center: [40.716667, -74]})
+                                 .jOVI ('dropMarker', [40.716667, -74], {text: '?',
+                                                                         textColor: '#222',
+                                                                         fill: '#00ff7f',
+                                                                         click: function (event){
+                                                                            alert ('Clicked on marker!')
+                                                                         }})
+                                 .jOVI ('setType', 'satellite');
 });
 
 function getTestTemplate (title, id) {

@@ -125,7 +125,21 @@
                     shape: 'balloon',
                     icon: null
                 },
-                settings = $.extend({}, defaultOptions, options);
+                settings,
+                markerListeners = {
+                	"click":      [options.click      || $.noop, false, null],
+                	"dblclick":   [options.dblclick   || $.noop, false, null],
+                	"mousemove":  [options.mousemove  || $.noop, false, null],
+                	"mouseover":  [options.mouseover  || $.noop, false, null],
+                	"mouseout":   [options.mouseout   || $.noop, false, null],
+                	"mouseenter": [options.mouseenter || $.noop, false, null],
+                	"mouseleave": [options.mouseleave || $.noop, false, null],
+                	"longpress":  [options.longpress  || $.noop, false, null],
+                	"dragstart":  [options.dragstart  || $.noop, false, null],
+                	"drag":       [options.drag       || $.noop, false, null],
+                	"dragend":    [options.dragend    || $.noop, false, null]
+                };
+            settings = $.extend({}, defaultOptions, options);
 
             settings = {
                 text: settings.text,
@@ -139,7 +153,9 @@
                 brush: {
                     color: settings.fill
                 },
-                icon: settings.icon
+                icon: settings.icon,
+                $name: $this.attr('id'),
+		        eventListener: markerListeners
             };
             if (settings.icon) {
                 _maps [$this.attr('id')].objects.add(new ovi.mapsapi.map.Marker(where, settings));
