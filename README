@@ -14,6 +14,9 @@ Successfully tested with Chrome, Firefox 5 and Safari on Mac OS. Works well also
 
 Works on Mobile Safari (iOS 4) and Android browser.
 
+== Getting jOVI ==
+You can either look at the source code within the src directory or download the latest stable release (tar.gz) located in the dist directory.
+
 == Installing jOVI ==
 Once you've downloaded the plugin you will have to add the following lines either ad the end of you page head or at the end of the body. I usually prefer to insert scripts in the body section for performance reasons.
 
@@ -21,4 +24,3 @@ Once you've downloaded the plugin you will have to add the following lines eithe
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 <script type="text/javascript" src="/path/to/jquery.jovi.js"></script>
 <script type="text/javascript" >/*Your code here*/</script>
-
