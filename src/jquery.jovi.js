@@ -119,7 +119,7 @@
             overlaySelector: true,
             typeSelector: true,
             searchManager: false,
-            routingManager: false,
+            routingManager: false
         };
 
     // Create an object literal for the public methods
