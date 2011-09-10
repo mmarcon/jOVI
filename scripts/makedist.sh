@@ -9,6 +9,11 @@ fi
 
 echo -n "Initializing... "
 
+DO_TAR=true
+if [ "$1" = "-notar" ]; then
+    DO_TAR=false
+fi
+
 CURRENT_DIR=`pwd`
 DIST_DIR=../dist
 TEMP_DIR=/tmp/jOVI.`date "+%Y%m%d-%H.%M"`
@@ -29,7 +34,11 @@ echo "Done."
 cp $INFILE $OUTFILE_NORMAL
 #TarGz everything together
 echo -n "Building dist... "
-tar cvzf $DIST_DIR/jOVI.tar.gz --directory $TEMP_DIR/.. `basename ${TEMP_DIR}` &> /dev/null
+if $DO_TAR; then
+	tar cvzf $DIST_DIR/jOVI.tar.gz --directory $TEMP_DIR/.. `basename ${TEMP_DIR}` &> /dev/null
+else
+	cp $TEMP_DIR/*.js $DIST_DIR
+fi
 #Remove temporary directory
 rm -rf $TEMP_DIR > /dev/null
 echo "Done."
