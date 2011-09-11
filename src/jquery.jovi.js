@@ -22,9 +22,10 @@
 */
 
 (function($) {
-    var 
+    var
     	_maps = {},
         _counter = 0,
+        _cachedCredentials = null,
         _eventProxy = function (event) {
         	var handler = event.target [event.type];
         	//For safety double check if the handler exists
@@ -40,6 +41,10 @@
 	        	});
 	        	handler.call (event.target.jovi, e);
 	        }
+        },
+        _registerApp = function (appID, authToken) {
+            _cachedCredentials = {"appId": appID, "authenticationToken": authToken};
+        	ovi.mapsapi.util.ApplicationContext.set(_cachedCredentials);
         },
         _initMap = function(target, settings) {
             var components = [],
@@ -124,11 +129,19 @@
 
     // Create an object literal for the public methods
     var methods = {
-        init: function(options) {
+        init: function(options, appID, authToken) {
             var $this = $(this);
             // Use extend to create settings from passed options and the defaults
             var settings = $.extend({}, defaults, options);
             _onOVIAvailable(function() {
+                //if _cachedCredentials is not null then the API information have been already set
+                //It's probably a safe assumption that one doesn't want to set it again since
+                //credentials are assigned on a per-application basis.
+            	if (_cachedCredentials !== null &&
+            	    typeof appID === 'string' &&
+            	    typeof authToken === 'string') {
+            		_registerApp(appID, authToken);
+            	}
                 _initMap($this, settings);
             });
         },
