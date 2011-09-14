@@ -22,7 +22,8 @@
 */
 
 (function($) {
-    var
+    var JOVI = 'jovi',
+        _mapsAPI = null, //Saves some bytes (gets minified) and improves performance
     	_maps = {},
         _counter = 0,
         _cachedCredentials = null,
@@ -44,45 +45,52 @@
         },
         _registerApp = function (appID, authToken) {
             _cachedCredentials = {"appId": appID, "authenticationToken": authToken};
-        	ovi.mapsapi.util.ApplicationContext.set(_cachedCredentials);
+        	_mapsAPI.util.ApplicationContext.set(_cachedCredentials);
+        },
+        _initialized = function(){
+            if (this.data(JOVI) != true) {
+                $.error ('jOVI map was never initialized on this container');
+            }
         },
         _initMap = function(target, settings) {
             var components = [],
             	mapID;
+            //Mark target as initialized
+            target.data(JOVI, true);
             //Setup components based on settings
             if (settings.behavior) {
-                components.push(new ovi.mapsapi.map.component.Behavior());
+                components.push(new _mapsAPI.map.component.Behavior());
             }
             if (settings.zoomBar) {
-                components.push(new ovi.mapsapi.map.component.ZoomBar());
+                components.push(new _mapsAPI.map.component.ZoomBar());
             }
             if (settings.scaleBar) {
-                components.push(new ovi.mapsapi.map.component.ScaleBar());
+                components.push(new _mapsAPI.map.component.ScaleBar());
             }
             if (settings.overview) {
-                components.push(new ovi.mapsapi.map.component.Overview());
+                components.push(new _mapsAPI.map.component.Overview());
             }
             if (settings.viewControl) {
-                components.push(new ovi.mapsapi.map.component.ViewControl());
+                components.push(new _mapsAPI.map.component.ViewControl());
             }
             if (settings.rightClick) {
-                components.push(new ovi.mapsapi.map.component.RightClick());
+                components.push(new _mapsAPI.map.component.RightClick());
             }
             if (settings.overlaySelector) {
-                components.push(new ovi.mapsapi.map.component.OverlaysSelector());
+                components.push(new _mapsAPI.map.component.OverlaysSelector());
             }
             if (settings.typeSelector) {
-                components.push(new ovi.mapsapi.map.component.TypeSelector());
+                components.push(new _mapsAPI.map.component.TypeSelector());
             }
-            if (settings.searchManager && ovi.mapsapi.search.Manager) {
-                components.push(new ovi.mapsapi.search.component.SearchComponent());
-                components.push(new ovi.mapsapi.search.component.RightClick());
+            if (settings.searchManager && _mapsAPI.search.Manager) {
+                components.push(new _mapsAPI.search.component.SearchComponent());
+                components.push(new _mapsAPI.search.component.RightClick());
             }
-            if (settings.routingManager && ovi.mapsapi.routing.Manager) {
-                if (ovi.mapsapi.search.Manager) {
-                    components.push(new ovi.mapsapi.routing.component.RouteComponent());
+            if (settings.routingManager && _mapsAPI.routing.Manager) {
+                if (_mapsAPI.search.Manager) {
+                    components.push(new _mapsAPI.routing.component.RouteComponent());
                 }
-                components.push(new ovi.mapsapi.routing.component.RightClick());
+                components.push(new _mapsAPI.routing.component.RightClick());
             }
             //See if we have a valid ID, otherwise generate one
             mapID = target.attr('id');
@@ -92,7 +100,7 @@
                 target.attr ('id', mapID);
             }
             
-            _maps [mapID] = new ovi.mapsapi.map.Display(target[0], {
+            _maps [mapID] = new _mapsAPI.map.Display(target[0], {
                 //zoom level for the map
                 zoomLevel: settings.zoom,
                 //center coordinates
@@ -102,6 +110,7 @@
         },
         _onOVIAvailable = function(callback) {
             if (window.ovi && window.ovi.mapsapi && window.ovi.mapsapi.map) {
+                _mapsAPI = ovi.mapsapi;
                 callback();
             }
             else {
@@ -171,6 +180,10 @@
                 	"drag":       [_eventProxy || $.noop, false, null],
                 	"dragend":    [_eventProxy || $.noop, false, null]
                 };
+                
+            //Check if a map was initialized here
+            _initialized.call ($(this));
+                
             settings = $.extend({}, defaultOptions, options);
             
             settings.textPen       = {strokeColor: settings.textColor};
@@ -181,10 +194,10 @@
 			settings.eventListener = markerListeners;
 			
             if (settings.icon) {
-                _maps [mapID].objects.add(new ovi.mapsapi.map.Marker(where, settings));
+                _maps [mapID].objects.add(new _mapsAPI.map.Marker(where, settings));
             }
             else {
-                _maps [mapID].objects.add(new ovi.mapsapi.map.StandardMarker(where, settings));
+                _maps [mapID].objects.add(new _mapsAPI.map.StandardMarker(where, settings));
             }
         },
         showInfoBubble: function (where, options) {
@@ -195,6 +208,10 @@
             	},
             	settings,
             	bubbles;
+            	
+            //Check if a map was initialized here
+            _initialized.call ($(this));
+            	
             settings = $.extend({}, defaultOptions, options);
             if (settings.content) {
             	if (settings.content.jquery) {
@@ -206,19 +223,31 @@
             else {
             	settings.content = '';
             }
-            bubbles = _maps [mapID].getComponentById('InfoBubbles') || _maps [mapID].addComponent(new ovi.mapsapi.map.component.InfoBubbles());
-            bubbles.addBubble(settings.content, new ovi.mapsapi.geo.Coordinate(where[0], where[1]));
+            bubbles = _maps [mapID].getComponentById('InfoBubbles') || _maps [mapID].addComponent(new _mapsAPI.map.component.InfoBubbles());
+            bubbles.addBubble(settings.content, new _mapsAPI.geo.Coordinate(where[0], where[1]));
         },
         setCenter: function(where, withAnimation) {
-            var $this = $(this), animationType = withAnimation ? 'default' : 'none'
+            var $this = $(this), animationType = withAnimation ? 'default' : 'none';
+            
+            //Check if a map was initialized here
+            _initialized.call ($this);
+            
             _maps [$this.attr('id')].setCenter(where, animationType);
         },
         setZoom: function(level) {
             var $this = $(this);
+            
+            //Check if a map was initialized here
+            _initialized.call ($this);
+            
             _maps [$this.attr('id')].set('zoomLevel', level);
         },
         setType: function(type) {
         	var $this = $(this), map = _maps [$this.attr('id')], mType;
+        	
+        	//Check if a map was initialized here
+            _initialized.call ($this);
+        	
         	switch (type) {
         		case 'map':
         			mType = map.NORMAL;
