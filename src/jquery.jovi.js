@@ -107,6 +107,32 @@
                 center: settings.center,
                 components: components
             });
+            //Litle trick to verify whether or not a map was loaded (and actually displayed).
+            //Inspired by: http://maps.vicchi.org/ovi-events.php
+            //I know closures should be avoided. However in this case I believe it is a good solution
+            //until Function.bind() will be implemented in all browsers. And anyway in general there won't
+            //be many maps in the same page, so most likely only one closure will exist at any give time.
+            _maps [mapID].mapLoaded = false;
+            _maps [mapID].addListener ('mapviewchangeend', function (event) {
+            	var that = this;
+            	if (that.mapLoaded === false) {
+            		//Then this map hasn't been loaded or displayed yet:
+            		//fire callbacks
+            		var e = $.Event(joviEvents.MAP_LOADED, {
+            			originalEvent: event,
+            			ovi: {
+            				map: that
+            			}
+            		});
+            		if ($.isFunction (settings.mapLoaded)) {
+            			settings.mapLoaded.call (target, e);
+            		}
+            		//Fire a generic load event on the target
+            		//just in case somebody is listening
+            		target.trigger (joviEvents.MAP_LOADED, e);
+            		that.mapLoaded = true;
+            	}
+            });
         },
         _onOVIAvailable = function(callback) {
             if (window.ovi && window.ovi.mapsapi && window.ovi.mapsapi.map) {
@@ -133,7 +159,12 @@
             overlaySelector: true,
             typeSelector: true,
             searchManager: false,
-            routingManager: false
+            routingManager: false,
+            mapLoaded: null
+        },
+        
+        joviEvents = {
+        	MAP_LOADED: 'maploaded'
         };
 
     // Create an object literal for the public methods

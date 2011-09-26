@@ -82,6 +82,11 @@ $(function(){
     catch (e) {
         error.children('.map').text(e.toString());
     }
+    
+    //9- Map events
+    var me = getTestTemplate ('Map Events', 'test-map-' + counter++).appendTo (container);
+    me.children('.map').jOVI ({center: [40.716667, -74], mapLoaded: function(e) {console.log ('mapLoaded callback was called')})
+                       .bind('maploaded', function(e){console.log ('Callback attached with bind was called')});
 });
 
 function getTestTemplate (title, id) {
