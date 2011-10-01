@@ -95,7 +95,7 @@
             //See if we have a valid ID, otherwise generate one
             mapID = target.attr('id');
             if (!mapID) {
-                mapID = 'jovi' + (_counter++);
+                mapID = JOVI + (_counter++);
                 //Set id for future reference
                 target.attr ('id', mapID);
             }
