@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jovi-doc>
+    <method-group name="General Methods">
+        <method name="init" description="Initializes jQuery jOVI.">
+            <parameters>
+                <parameter name="options" type="Object" description="Options for jOVI initialization">
+                    <options>
+                        <option name="center" type="Array" description="Array containing latitude and longitude where to center the map" default="[29.187778, -82.130556]"/>
+                        <option name="zoom" type="Number" description="Initial zoom level" default="10"/>
+                        <option name="behavior" type="Boolean" description="Essentially mouse dragging and scrolling" default="true"/>
+                        <option name="zoomBar" type="Boolean" description="Zoom bar enabled/disabled" default="true"/>
+                        <option name="scaleBar" type="Boolean" description="Scale bar enabled/disabled" default="true"/>
+                        <option name="overview" type="Boolean" description="Little zoomed-out view (bottom-right) enabled/disabled" default="false"/>
+                        <option name="viewControl" type="Boolean" description="Control for panning enabled/disabled" default="true"/>
+                        <option name="rightClick" type="Boolean" description="/Mouse right click enabled/disabled" default="true"/>
+                        <!--<option name="overlaySelector" type="Boolean" description="" default="true"/>-->
+                        <option name="typeSelector" type="Boolean" description="Controls to choose map, satellite or terrain" default="true"/>
+                        <option name="searchManager" type="Boolean" description="Right click  gives info on the location enabled/disabled" default="false"/>
+                        <option name="routingManager" type="Boolean" description="Right click allows to show routes on the map enabled/disabled" default="false"/>
+                        <option name="mapLoaded" type="Function" description="Callback for maploaded event" default="null"/>
+                    </options>
+                </parameter>
+                <parameter name="appID" type="String" description="Application ID obtained from the NOKIA Developer website"/>
+                <parameter name="authToken" type="String" description="Authorization token obtained from the NOKIA Developer website"/>
+            </parameters>
+        </method>
+        <method name="setCenter" description="Sets the center of the map">
+            <parameter name="where" type="Array" description="Array containing latitude and longitude where to center the map"/>
+            <parameter name="withAnimation" type="Boolean" description="Enable/disable animation"/>
+            <throw>
+                <error if="jOVI was never initialized on the target container"/>
+            </throw>
+        </method>
+        <method name="setType" description="Sets the type of the map">
+            <parameter name="type" type="String" description="Map type identifier. Can be 'map', 'satellite' or 'terrain'"/>
+            <throw>
+                <error if="jOVI was never initialized on the target container"/>
+            </throw>
+        </method>
+    </method-group>
+    <method-group name="Markers">
+        <method name="dropMarker" description="Places a Marker on the map">
+            <parameter name="where" type="Array" description="Array containing latitude and longitude where to place the Marker"/>
+            <parameter name="options" type="Object" description="Options for the Marker">
+                <options>
+                   <option name="text" type="String" description="Some text to be displayed on the Marker. Typically just one or two characters" default="Empty String"/>
+                   <option name="textColor" type="String" description="Color for the text on the Marker" default="#333333"/>
+                   <option name="fill" type="String" description="Color of the Marker" default="#ff6347"/>
+                   <option name="stroke" type="String" description="Color for the Marker border" default="#333333"/>
+                   <option name="shape" type="String" description="Shape of the Marker. Can be 'balloon', 'star' or 'triangle'" default="balloon"/>
+                   <option name="icon" type="String" description="Path to a graphic file containing an icon for the Marker" default="undefined"/>
+                   <option name="click" type="Function" description="Click event handler" default="undefined"/>
+                   <option name="dblclick" type="Function" description="Double-Click event handler" default="undefined"/>
+                   <option name="mousemove" type="Function" description="Mouse-Move event handler" default="undefined"/>
+                   <option name="mouseover" type="Function" description="Mouse-Over event handler" default="undefined"/>
+                   <option name="mouseout" type="Function" description="Mouse-Out event handler" default="undefined"/>
+                   <option name="mouseenter" type="Function" description="Mouse-Enter event handler" default="undefined"/>
+                   <option name="mouseleave" type="Function" description="Mouse-Leave event handler" default="undefined"/>
+                   <option name="longpress" type="Function" description="Long-Press event handler" default="undefined"/>
+                   <option name="dragstart" type="Function" description="Drag-Start event handler" default="undefined"/>
+                   <option name="drag" type="Function" description="Drag event handler" default="undefined"/>
+                   <option name="dragend" type="Function" description="Drag-End event handler" default="undefined"/>
+                </options>
+            </parameter>
+        </method>
+    </method-group>
+    <method-group name="Info Bubbles">
+        <method name="showInfoBubble" description="Place InfoBubble on the map">
+            <parameter name="where" type="Array" description="Array containing latitude and longitude where to place the InfoBubble"/>
+            <parameter name="options" type="Object" description="Options for the InfoBubble">
+                <options>
+                   <option name="content" type="String or jQuery Object" description="The content of the InfoBubble" default="Empty String"/>
+                </options>
+            </parameter>
+        </method>
+    </method-group>
+</jovi-doc>
