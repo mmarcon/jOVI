@@ -19,6 +19,9 @@ h1, h2 {
 h1 {
 	font-family: 'Poller One', helvetica, arial, sans-serif;
 	font-size: 48px;
+	-webkit-text-shadow: 0 -1px 0 #333;
+	-moz-text-shadow: 0 -1px 0 #333;
+	text-shadow: 0 -1px 0 #333;
 }
 
 h2 {
@@ -26,6 +29,10 @@ h2 {
 }
 
 section {
+	margin: 20px 10px;
+}
+
+body#home section {
 	position: absolute;
 	width: 500px;
 	top: 20%;
@@ -60,4 +67,64 @@ p a:hover, p a:active {
 p.signature {
 	font-family: 'Annie Use Your Telescope', cursive;
 	font-size: 150%;
+}
+
+/*Demos*/
+div.map {
+	width: 400px;
+	height: 400px;
+	border: 5px solid #fff;
+	box-shadow: 0 0 10px #ccc;
+	margin: 20px auto;
+}
+
+div.demo-set {
+	margin: 40px;
+	border: 1px solid #eee;
+	border-radius: 4px;
+	position: relative;
+	background: #fff;
+}
+
+div.demo-set:before,
+div.demo-set:after {
+	content: "";
+    position: absolute; 
+    z-index: -2;
+    top: 50%;
+    bottom: 3px;
+    left: 10px;
+    right: 10px;
+    -webkit-border-radius: 100px / 10px;
+    -moz-border-radius: 100px / 10px;
+    border-radius: 100px / 10px;
+	-webkit-box-shadow: 0 0 15px #666;
+    -moz-box-shadow: 0 0 15px #666;
+    box-shadow: 0 0 15px #666;
+}
+
+div.demo-set:after {
+	bottom: 50%;
+    top: 3px;
+}
+
+span.control {
+	position: absolute;
+	top: 50%;
+	left: -5px;
+	width: 40px;
+	height: 40px;
+	margin-top: -20px;
+	background: #ccc;
+	border-radius: 2px;
+	background-image: url(../images/left.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor: pointer;
+}
+
+span.right {
+	left: auto;
+	right: -5px;
+	background-image: url(../images/right.png);
 }
