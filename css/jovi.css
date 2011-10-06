@@ -84,6 +84,7 @@ div.demo-set {
 	border-radius: 4px;
 	position: relative;
 	background: #fff;
+	max-width: 942px;
 }
 
 div.demo-set:before,
