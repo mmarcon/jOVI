@@ -79,12 +79,12 @@ div.map {
 }
 
 div.demo-set {
-	margin: 40px;
+	margin: 40px auto;
 	border: 1px solid #eee;
 	border-radius: 4px;
 	position: relative;
 	background: #fff;
-	max-width: 942px;
+	width: 940px;
 }
 
 div.demo-set:before,
