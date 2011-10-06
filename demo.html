@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>jOVI - Demo</title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css" />
+	<link rel="stylesheet" type="text/css" href="css/jovi.css" />
+	<!--[if IE]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+
+<body id="demo">
+	<header>
+		<hgroup>
+			<h1>jOVI</h1>
+			<h2>Demonstration</h2>
+		</hgroup>
+	</header>
+	<div class="demo-set">
+		
+	</div>
+	<script type="text/javascript" src="http://api.maps.ovi.com/jsl.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script type="text/javascript" src="js/utilities.js"></script>
+	<script type="text/javascript" src="js/jquery.jovi.js"></script>
+	<script type="text/html" id="demo_tpl">
+		<section class="demo">
+			<h3><%=title%></h3>
+			<p><%=description%></p>
+			<div class="map" id="<%=id%>"></div>
+		</section>
+	</script>
+	<script type="text/javascript" src="js/demo.js"></script>
+</body>
+</html>
