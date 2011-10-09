@@ -182,4 +182,24 @@ dl.parameters p.parameter-description {
 
 dl.options {
     padding-left: 15px;
+    border-left: 2px solid #ddd;
+    margin-left: 10px;
+}
+
+dl.options dt {
+    position: relative;
+    color: #999;
+}
+
+dl.options dt:before {
+    content: "";
+    width: 0;
+    height: 0;
+    display: block;
+    position: absolute;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 6px solid #ddd;
+    top: 9px;
+    left: -15px;
 }
