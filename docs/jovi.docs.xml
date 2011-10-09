@@ -12,7 +12,7 @@
                         <option name="scaleBar" type="Boolean" description="Scale bar enabled/disabled" default="true"/>
                         <option name="overview" type="Boolean" description="Little zoomed-out view (bottom-right) enabled/disabled" default="false"/>
                         <option name="viewControl" type="Boolean" description="Control for panning enabled/disabled" default="true"/>
-                        <option name="rightClick" type="Boolean" description="/Mouse right click enabled/disabled" default="true"/>
+                        <option name="rightClick" type="Boolean" description="Mouse right click enabled/disabled" default="true"/>
                         <!--<option name="overlaySelector" type="Boolean" description="" default="true"/>-->
                         <option name="typeSelector" type="Boolean" description="Controls to choose map, satellite or terrain" default="true"/>
                         <option name="searchManager" type="Boolean" description="Right click  gives info on the location enabled/disabled" default="false"/>
