@@ -29,21 +29,22 @@
 		</section>
 	</script>
 	<script type="text/html" id="method_tpl">
-			<dt><%=name%></dt>
+			<dt><h5><%=name%></h5></dt>
 			<dd>
 				<p class="method-description"><%=description%></p>
+				<h6>Parameters</h6>
 				<dl class="parameters"></dl>
 			</dd>
 	</script>
 	<script type="text/html" id="parameter_tpl">
-			<dt><%=name%> (<%=type%>)</dt>
+			<dt><%=name%> <span class="parameter-type"><%=type%></span></dt>
 			<dd>
 				<p class="parameter-description"><%=description%></p>
 				<dl class="options"></dl>
 			</dd>
 	</script>
 	<script type="text/html" id="option_tpl">
-			<dt><%=name%> (<%=type%>)</dt>
+			<dt><%=name%> <span class="option-type"><%=type%></span></dt>
 			<dd>
 				<p class="option-description"><%=description%></p>
 			</dd>

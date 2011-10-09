@@ -129,3 +129,57 @@ span.right {
 	right: -5px;
 	background-image: url(../images/right.png);
 }
+
+/*Documentation*/
+section.method-group {
+    margin-bottom: 40px;
+}
+
+dl.methods h5 {
+    margin-top: 20px;
+    color: #fff;
+    background-color: #cd5c5c;
+    display: inline-block;
+    padding: 8px;
+    font-weight: 400;
+    margin-bottom: 5px;
+}
+
+dl.methods p.method-description {
+    font-size: 90%;
+    font-weight: 400;
+}
+
+dl.methods h6,
+dl.methods dl.parameters {
+    padding-left: 10px;
+}
+
+dl.methods h6 {
+    font-size: 80%;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin-bottom: 5px; 
+}
+
+dl.parameters dt {
+    color: #4682b4;
+}
+
+span.parameter-type,
+span.option-type {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #ccc;
+    color: #fff;
+    padding: 4px;
+    margin-left: 10px;
+}
+
+dl.parameters p.parameter-description {
+    font-size: 80%;
+}
+
+dl.options {
+    padding-left: 15px;
+}
