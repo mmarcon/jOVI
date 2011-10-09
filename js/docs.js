@@ -46,12 +46,36 @@ var JOVIDOCS = JOVIDOCS || {};
     };
 
     D.Docs = function() {
+        var reference = $('.reference'),
+            groupTpl = $('#method_group_tpl').html(),
+            methodTpl = $('#method_tpl').html(),
+            parameterTpl = $('#parameter_tpl').html(),
+            optionTpl = $('#option_tpl').html();
         $.ajax('xml/jovi.docs.xml', {
             error: $.error,
-            success: function (response) {
-                var parser = new DocParser (response);
+            success: function(response) {
+                var parser = new DocParser(response), ref;
                 parser.parse();
-                console.log (parser.result);
+                ref = parser.result;
+                $.each(ref, function(k, v){
+                    var mGroup = $.tmpl(groupTpl, {groupName: k}),
+                        methods = mGroup.children('.methods');
+                    $.each(v, function(methodName, m){
+                        var method = $.tmpl(methodTpl, {name: methodName, description: m.description}),
+                            parameters = method.find('.parameters');
+                        $.each (m.parameters, function(parameterName, p){
+                            var parameter = $.tmpl(parameterTpl, {name: parameterName, description: p.description, type: p.type}),
+                                options = parameter.find ('.options');
+                            $.each (p.options, function(optionName, o) {
+                                $.tmpl(parameterTpl, {name: optionName, description: o.description, type: o.type}).appendTo(options);
+                            });
+                            parameters.append(parameter);
+                        });
+                        methods.append(method);
+                    });
+                    
+                    reference.append(mGroup);
+                });
             }
         });
     };
