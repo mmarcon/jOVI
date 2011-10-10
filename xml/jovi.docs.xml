@@ -48,11 +48,11 @@
                 <parameter name="where" type="Array" description="Array containing latitude and longitude where to place the Marker"/>
                 <parameter name="options" type="Object" description="Options for the Marker">
                     <options>
-                       <option name="text" type="String" description="Some text to be displayed on the Marker. Typically just one or two characters" default="Empty String"/>
-                       <option name="textColor" type="String" description="Color for the text on the Marker" default="#333333"/>
-                       <option name="fill" type="String" description="Color of the Marker" default="#ff6347"/>
-                       <option name="stroke" type="String" description="Color for the Marker border" default="#333333"/>
-                       <option name="shape" type="String" description="Shape of the Marker. Can be 'balloon', 'star' or 'triangle'" default="balloon"/>
+                       <option name="text" type="String" description="Some text to be displayed on the Marker. Typically just one or two characters" default="''"/>
+                       <option name="textColor" type="String" description="Color for the text on the Marker" default="'#333333'"/>
+                       <option name="fill" type="String" description="Color of the Marker" default="'#ff6347'"/>
+                       <option name="stroke" type="String" description="Color for the Marker border" default="'#333333'"/>
+                       <option name="shape" type="String" description="Shape of the Marker. Can be 'balloon', 'star' or 'triangle'" default="'balloon'"/>
                        <option name="icon" type="String" description="Path to a graphic file containing an icon for the Marker" default="undefined"/>
                        <option name="click" type="Function" description="Click event handler" default="undefined"/>
                        <option name="dblclick" type="Function" description="Double-Click event handler" default="undefined"/>
@@ -79,7 +79,7 @@
                 <parameter name="where" type="Array" description="Array containing latitude and longitude where to place the InfoBubble"/>
                 <parameter name="options" type="Object" description="Options for the InfoBubble">
                     <options>
-                       <option name="content" type="String or jQuery Object" description="The content of the InfoBubble" default="Empty String"/>
+                       <option name="content" type="String or jQuery Object" description="The content of the InfoBubble" default="''"/>
                     </options>
                 </parameter>
             </parameters>

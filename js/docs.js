@@ -26,6 +26,7 @@ var JOVIDOCS = JOVIDOCS || {};
                     cGroup [method].parameters [parameter] = {
                         description: DOMparameter.attr('description'),
                         type: DOMparameter.attr('type'),
+                        defaultValue: DOMparameter.attr('default'),
                         options:{}
                     };
                     DOMparameter.children('options').children('option').each(function(){
@@ -33,7 +34,8 @@ var JOVIDOCS = JOVIDOCS || {};
                             option = DOMoption.attr('name');
                         cGroup [method].parameters [parameter].options [option] = {
                             description: DOMoption.attr('description'),
-                            type: DOMoption.attr('type')
+                            type: DOMoption.attr('type'),
+                            defaultValue: DOMoption.attr('default')
                         };
                     });
                 });
@@ -58,6 +60,7 @@ var JOVIDOCS = JOVIDOCS || {};
                 var parser = new DocParser(response), ref;
                 parser.parse();
                 ref = parser.result;
+                console.log (ref);
                 $.each(ref, function(k, v){
                     var mGroup = $.tmpl(groupTpl, {groupName: k}),
                         methods = mGroup.children('.methods');
@@ -65,10 +68,17 @@ var JOVIDOCS = JOVIDOCS || {};
                         var method = $.tmpl(methodTpl, {name: methodName, description: m.description}),
                             parameters = method.find('.parameters'), exceptions = method.find('.exceptions');
                         $.each (m.parameters, function(parameterName, p){
-                            var parameter = $.tmpl(parameterTpl, {name: parameterName, description: p.description, type: p.type}),
+                            var parameter = $.tmpl(parameterTpl, {name: parameterName, description: p.description, type: p.type, defaultValue: p.defaultValue}),
                                 options = parameter.find ('.options');
+                            if (!p.defaultValue) {
+                                parameter.find('.parameter-default').remove();
+                            }
                             $.each (p.options, function(optionName, o) {
-                                $.tmpl(parameterTpl, {name: optionName, description: o.description, type: o.type}).appendTo(options);
+                                var option = $.tmpl(parameterTpl, {name: optionName, description: o.description, type: o.type, defaultValue: o.defaultValue});
+                                if (!o.defaultValue) {
+                                    option.find('.option-default').remove();
+                                }
+                                options.append (option);
                             });
                             parameters.append(parameter);
                         });

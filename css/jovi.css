@@ -207,6 +207,17 @@ span.option-type,
     margin-left: 10px;
 }
 
+span.parameter-default,
+span.option-default,
+.default-cc {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #f0ffff;
+    color: #666;
+    padding: 4px;
+    margin-left: 10px;
+}
+
 dl.parameters p.parameter-description {
     font-size: 80%;
 }

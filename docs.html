@@ -33,6 +33,7 @@
 	       <li class="convention parameter-cc">thisIsAParameter</li>
 	       <li class="convention option-cc">thisIsAnOption</li>
 	       <li class="convention parameterType-cc">ParameterType</li>
+	       <li class="convention default-cc">Default: Value</li>
 	   </ul>
 	   <p>The method <code>init</code> is implicitly invoked if no method is explicitly indicated. Generally methods throw an error if they are invoked on a container where jOVI was never initialized.</p>
 	</section>
@@ -58,14 +59,14 @@
 			</dd>
 	</script>
 	<script type="text/html" id="parameter_tpl">
-			<dt><%=name%> <span class="parameter-type"><%=type%></span></dt>
+			<dt><%=name%> <span class="parameter-type"><%=type%></span> <span class="parameter-default">Default: <%=defaultValue%></span></dt>
 			<dd>
 				<p class="parameter-description"><%=description%></p>
 				<dl class="options"></dl>
 			</dd>
 	</script>
 	<script type="text/html" id="option_tpl">
-			<dt><%=name%> <span class="option-type"><%=type%></span></dt>
+			<dt><%=name%> <span class="option-type"><%=type%></span> <span class="option-default">Default: <%=defaultValue%></span></dt>
 			<dd>
 				<p class="option-description"><%=description%></p>
 			</dd>
