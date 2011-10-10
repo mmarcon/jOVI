@@ -50,7 +50,8 @@ var JOVIDOCS = JOVIDOCS || {};
             groupTpl = $('#method_group_tpl').html(),
             methodTpl = $('#method_tpl').html(),
             parameterTpl = $('#parameter_tpl').html(),
-            optionTpl = $('#option_tpl').html();
+            optionTpl = $('#option_tpl').html(),
+            exceptionTpl = $('#exception_tpl').html();
         $.ajax('xml/jovi.docs.xml', {
             error: $.error,
             success: function(response) {
@@ -62,7 +63,7 @@ var JOVIDOCS = JOVIDOCS || {};
                         methods = mGroup.children('.methods');
                     $.each(v, function(methodName, m){
                         var method = $.tmpl(methodTpl, {name: methodName, description: m.description}),
-                            parameters = method.find('.parameters');
+                            parameters = method.find('.parameters'), exceptions = method.find('.exceptions');
                         $.each (m.parameters, function(parameterName, p){
                             var parameter = $.tmpl(parameterTpl, {name: parameterName, description: p.description, type: p.type}),
                                 options = parameter.find ('.options');
@@ -71,6 +72,15 @@ var JOVIDOCS = JOVIDOCS || {};
                             });
                             parameters.append(parameter);
                         });
+                        if (m.errors.length === 0) {
+                            method.find('.exceptions-title').remove();
+                            exceptions.remove();
+                        }
+                        else {
+                            $.each (m.errors, function(){
+                                $.tmpl(exceptionTpl, {errorIf: this}).appendTo(exceptions);
+                            });
+                        }
                         methods.append(method);
                     });
                     

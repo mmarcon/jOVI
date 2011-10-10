@@ -1,6 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Poller+One);
 @import url(http://fonts.googleapis.com/css?family=Lato:300,400);
-@import url(http://fonts.googleapis.com/css?family=Annie+Use+Your+Telescope);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
 
 body {
 	background-color: #fff;
@@ -131,11 +131,35 @@ span.right {
 }
 
 /*Documentation*/
+section ul.convention-list {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+li.convention {
+    margin: 0;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+h4,
+.methodGroup-cc {
+    margin-top: 20px;
+    color: #fff;
+    background-color: #4682b4;
+    display: inline-block;
+    padding: 8px;
+    font-weight: 400;
+    margin-bottom: 5px;
+    font-size: 110%;
+}
+
 section.method-group {
     margin-bottom: 40px;
 }
 
-dl.methods h5 {
+dl.methods h5,
+.method-cc {
     margin-top: 20px;
     color: #fff;
     background-color: #cd5c5c;
@@ -151,7 +175,8 @@ dl.methods p.method-description {
 }
 
 dl.methods h6,
-dl.methods dl.parameters {
+dl.methods dl.parameters,
+dl.methods ul.exceptions {
     padding-left: 10px;
 }
 
@@ -162,12 +187,18 @@ dl.methods h6 {
     margin-bottom: 5px; 
 }
 
-dl.parameters dt {
+dl.methods h6.exceptions-title {
+    color: #cd5c5c;
+}
+
+dl.parameters dt,
+.parameter-cc {
     color: #4682b4;
 }
 
 span.parameter-type,
-span.option-type {
+span.option-type,
+.parameterType-cc {
     display: inline-block;
     border-radius: 4px;
     background-color: #ccc;
@@ -186,7 +217,8 @@ dl.options {
     margin-left: 10px;
 }
 
-dl.options dt {
+dl.options dt,
+.option-cc {
     position: relative;
     color: #999;
 }
@@ -202,4 +234,26 @@ dl.options dt:before {
     border-left: 6px solid #ddd;
     top: 9px;
     left: -15px;
+}
+
+dl.methods ul.exceptions {
+    font-size: 80%;
+}
+
+dl.methods ul.exceptions li:before {
+    content: "- ";
+}
+
+pre {
+    display: block;
+    padding: 5px;
+    background-color: #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+code {
+    font-family: 'Droid Sans Mono', monospace;
+    font-size: 14px;
+    color: #333;
 }

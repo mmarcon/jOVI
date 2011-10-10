@@ -17,6 +17,25 @@
 			<h2>Reference</h2>
 		</hgroup>
 	</header>
+	<section>
+	   <h3>jOVI Reference</h3>
+	   <p>This page contains a reference to the jQuery jOVI API. It is usually updated to the latest stable version of the plugin, that you can find in the <a href="https://github.com/mmarcon/jOVI/tree/master/dist" title="jOVI Dist">dist directory</a>. If some method that you find in the documentation does not work, most likely I forgot to generate a new jOVI release. In this case either try the version in the <a href="https://github.com/mmarcon/jOVI/tree/master/src" title="jOVI Dist">src directory</a> (but you'll have to minify it yourself) or <a href="http://twitter.com/home?status=Hey @mmarcon, please make a new release of jOVI" title="Please make a new release">send me a tweet</a>.</p>
+	</section>
+	<section>
+	   <h3>Calling methods</h3>
+	   <p>The syntax I chose to use for making method calls in jOVI are very similar to the one used by the amazing <a href="http://jqueryui.com/" title="jQuery UI Homepage">jQuery UI</a>. A typical method call in jOVI looks like this:</p>
+	   <pre><code>$('#container').jOVI('methodName'[, [parameters]]);</code></pre>
+	   <p>Parameter can be simple (String, Number) or complex objects. Typically there is only one complex object referred as &quot;options&quot; in the documentation below. The documentation shows for each parameter and each option what are the possible values and the related types.</p>
+	   <p>The color convention is the following:</p>
+	   <ul class="convention-list">
+	       <li class="convention methodGroup-cc">Method Group</li>
+	       <li class="convention method-cc">thisIsAMethod</li>
+	       <li class="convention parameter-cc">thisIsAParameter</li>
+	       <li class="convention option-cc">thisIsAnOption</li>
+	       <li class="convention parameterType-cc">ParameterType</li>
+	   </ul>
+	   <p>The method <code>init</code> is implicitly invoked if no method is explicitly indicated. Generally methods throw an error if they are invoked on a container where jOVI was never initialized.</p>
+	</section>
 	<div class="reference">
 		
 	</div>
@@ -24,7 +43,7 @@
 	<script type="text/javascript" src="js/utilities.js"></script>
 	<script type="text/html" id="method_group_tpl">
 		<section class="method-group">
-			<h3><%=groupName%></h3>
+			<h4><%=groupName%></h4>
 			<dl class="methods"></dl>
 		</section>
 	</script>
@@ -32,8 +51,10 @@
 			<dt><h5><%=name%></h5></dt>
 			<dd>
 				<p class="method-description"><%=description%></p>
-				<h6>Parameters</h6>
+				<h6 class="parameter-title">Parameters</h6>
 				<dl class="parameters"></dl>
+				<h6 class="exceptions-title">Throws Error if:</h6>
+				<ul class="exceptions"></ul>
 			</dd>
 	</script>
 	<script type="text/html" id="parameter_tpl">
@@ -48,6 +69,9 @@
 			<dd>
 				<p class="option-description"><%=description%></p>
 			</dd>
+	</script>
+	<script type="text/html" id="exception_tpl">
+			<li><%=errorIf%></li>
 	</script>
 	<script type="text/javascript" src="js/docs.js"></script>
 </body>
