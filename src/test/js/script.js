@@ -1,4 +1,4 @@
-$(function(){
+$(window).load(function(){
     //Setup test areas
     $('.test h3').live ('click', function(){
         $(this).siblings('div').toggle();
@@ -78,6 +78,7 @@ $(function(){
     var error = getTestTemplate ('Invoke methods on a map never initialized (jOVI throws exception)', 'test-map-' + counter++).appendTo (container);
     try {
         error.children('.map').jOVI('setCenter',  [40.69, -74.045278]);
+        
     }
     catch (e) {
         error.children('.map').text(e.toString());
@@ -90,7 +91,7 @@ $(function(){
 });
 
 function getTestTemplate (title, id) {
-    var template = $('<div/>', {'class': 'test', id: id});
+    var template = $('<div/>', {'class': 'test'}).attr('id', id);
     template.append ('<h3>' + title + '</h3>');
     template.append ('<div class="map"/>');
     return template;          

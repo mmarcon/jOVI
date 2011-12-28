@@ -23,6 +23,7 @@
 
 (function($) {
     var JOVI = 'jovi',
+    	MQUEUE = 'jovi-mqueue',
         _mapsAPI = null, //Saves some bytes (gets minified) and improves performance
     	_maps = {},
         _counter = 0,
@@ -134,14 +135,14 @@
             	}
             });
         },
-        _onOVIAvailable = function(callback) {
-            if (window.ovi && window.ovi.mapsapi && window.ovi.mapsapi.map) {
-                _mapsAPI = ovi.mapsapi;
+        _onNokiaMapsAvailable = function(callback) {
+            if (_loader && _loader.done) {
+                _mapsAPI = nokia.maps;
                 callback();
             }
             else {
                 setTimeout(function() {
-                    _onOVIAvailable(callback);
+                    _onNokiaMapsAvailable(callback);
                 }, 200);
             }
         },
@@ -164,16 +165,64 @@
         },
         
         joviEvents = {
-        	MAP_LOADED: 'maploaded'
-        };
+        	MAP_LOADED: 'maploaded',
+        	INIT_DONE: '_initdone',
+        },
+        
+        _JSLLoader = function(autoload, callback){
+        	if (!(this instanceof _JSLLoader)) {
+	            return new _JSLLoader(autoload, callback);
+	        }
+	        var self = this;
+	        this.invoked = false;
+	        this.done = false;
+	        this.load = function(){
+	        	var script, head, loadFeatures;
+	        	if (self.invoked) {
+	        		return;
+	        	}
+	        	self.invoked = true;
+	        	loadFeatures = function() {
+					nokia.maps.Features.load({
+						map: 'auto',
+						ui: 'auto',
+						search: 'auto',
+						routing: 'auto',
+						positioning: 'auto',
+						behavior: 'auto'
+					}, function(){
+						self.done = true;
+						(typeof callback === 'function') && callback(); 
+					});
+				};
+	        	head = document.getElementsByTagName('head')[0];
+				script = document.createElement('script');
+				script.src = 'http://api.maps.nokia.com/2.1.0/jsl.js?blank=true';
+				script.type = 'text/javascript';
+				script.charset = "utf-8";
+				script.onreadystatechange = function() {
+					if(script.readyState == "loaded" || script.readyState == "complete") {
+						loadFeatures();
+					}
+				};
+				script.onload = loadFeatures;
+				
+				head.appendChild(script);
+	        };
+	        autoload && this.load();
+        },
+        _loader;
 
     // Create an object literal for the public methods
     var methods = {
         init: function(options, appID, authToken) {
-            var $this = $(this);
+        	if (!_loader) {
+        		_loader = _JSLLoader(true);
+        	}
+            var $this = $(this), context = this;
             // Use extend to create settings from passed options and the defaults
             var settings = $.extend({}, defaults, options);
-            _onOVIAvailable(function() {
+            _onNokiaMapsAvailable(function() {
                 //if _cachedCredentials is not null then the API information have been already set
                 //It's probably a safe assumption that one doesn't want to set it again since
                 //credentials are assigned on a per-application basis.
@@ -183,6 +232,8 @@
             		_registerApp(appID, authToken);
             	}
                 _initMap($this, settings);
+                //$this.data(MQUEUE).executeAll(context);
+                $this.trigger($.Event(joviEvents.INIT_DONE));
             });
         },
         dropMarker: function(where, options) {
@@ -298,20 +349,27 @@
 
     $.fn.jOVI = function(method) {
         //Make a copy of the arguments
-        var a = Array.prototype.slice.call(arguments, 0);
+        var a = Array.prototype.slice.call(arguments, 0), init = false;
         if (methods[method]) {
             method = methods[method];
             // Our method was sent as an argument, remove it using slice because it's not an argument for our method
             a = Array.prototype.slice.call(a, 1);
         } else if (typeof(method) == 'object' || !method) {
             method = methods.init;
+            init = true;
         } else {
             $.error('Method ' + method + ' does not exist on jOVI');
             return this;
         }
         return this.each(function() {
+        	var that = this;
             // Use apply to sent arguments when calling our selected method
-            method.apply(this, a);
+            if ((_loader && _loader.done) || init) {
+            	method.apply(that, a);
+            }
+            else {
+            	$(this).one(joviEvents.INIT_DONE, function(){method.apply(this, a)}); //one uses bind in jQuery < 1.7 and on in jQuery > 1.7
+            }
         });
     };
 
