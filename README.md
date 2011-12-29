@@ -22,14 +22,12 @@ You can either look at the source code within the src directory or download the 
 ## Installing jOVI
 Once you've downloaded the plugin you will have to add the following lines either ad the end of you page head or at the end of the body. I usually prefer to insert scripts in the body section for performance reasons.
 
-`<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>`
-
-`<script type="text/javascript" src="/path/to/jquery.jovi.js"></script>`
-
-`<script type="text/javascript">`
-
-`$(window).load({/*your code here*/});`
-
-`</script>`
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/path/to/jquery.jovi.js"></script>
+	<script type="text/javascript">
+		$(window).load({
+			/*your code here*/
+		});
+	</script>
 
 It is important to put your script in the **window.onload** callback. Otherwise the JSLA code shows some weird and undesired behavior, i.e. it completely empties the DOM.
