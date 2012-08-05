@@ -38,7 +38,7 @@ $(window).load(function(){
                             contextMenu: true,               //Enable context menu on mouse right click or long-press
                             typeSelector: true,              //Controls to choose map, satellite or terrain
                             positioning: true,              //Controls to choose map, satellite or terrain
-                            searchManager: false,             //Right click  gives info on the location
+                            searchManager: true,             //Right click  gives info on the location
                             routingManager: false            //Right click allows to show routes on the map
                         }).jOVI ('setType', 'terrain');      //type can be map, satellite, terrain
     
@@ -91,6 +91,27 @@ $(window).load(function(){
     var me = getTestTemplate ('Map Events', 'test-map-' + counter++).appendTo (container);
     me.children('.map').jOVI ({center: [40.716667, -74], mapLoaded: function(e) {console.log ('mapLoaded callback was called')}})
                        .bind('maploaded', function(e){console.log ('Callback attached with bind was called')});
+
+    //10- Map with KML
+    var kmlMap = getTestTemplate ('KML Map', 'test-map-' + counter++).appendTo (container);
+                       
+    var kmlParsed = function (resultSet) {
+        // Retrieve map objects container from KML resultSet
+        var container = resultSet.container.objects.get(0);
+        var boundingBox = container.getBoundingBox();
+        // Here we check whether we have valid bounding box or no. 
+        // In case KML document does not contain any supported displayable element, bounding box will be a null, 
+        // therefore it will not be possible to zoom to the not existing object. 
+        if (boundingBox) {
+            // Switch the viewport of the map to show all KML map objects within the container
+            // This also uses apiAction to allow direct API calls for advanced functionality
+            $(this).jOVI('apiAction', 'zoomTo', boundingBox);
+        }
+    }
+
+    kmlMap.children('.map').jOVI({kml: true})
+                           .jOVI ('parseKml', 'schoenefeld.kml', kmlParsed);
+
 });
 
 function getTestTemplate (title, id) {

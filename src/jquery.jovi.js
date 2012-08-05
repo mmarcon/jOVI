@@ -88,20 +88,6 @@
             if (settings.contextMenu && _mapsAPI.map.component.ContextMenu) {
                 components.push(new _mapsAPI.map.component.ContextMenu());
             }
-            if (settings.searchManager && _mapsAPI.search.Manager) {
-                components.push(new _mapsAPI.search.component.SearchComponent());
-                if (settings.contextMenu && _mapsAPI.map.component.ContextMenu) {
-                    // components.push(new _mapsAPI.search.component.RightClick());
-                }
-            }
-            if (settings.routingManager && _mapsAPI.routing.Manager) {
-                if (_mapsAPI.search.Manager) {
-                    components.push(new _mapsAPI.routing.component.RouteComponent());
-                }
-                if (settings.contextMenu && _mapsAPI.map.component.ContextMenu) {
-                    // components.push(new _mapsAPI.routing.component.RightClick());
-                }
-            }
             //See if we have a valid ID, otherwise generate one
             mapID = target.attr('id');
             if (!mapID) {
@@ -169,6 +155,7 @@
             positioning: false,
             searchManager: false,
             routingManager: false,
+            kmlManager: false,
             mapLoaded: null
         },
 
@@ -197,7 +184,8 @@
                         search: 'auto',
                         routing: 'auto',
                         positioning: 'auto',
-                        behavior: 'auto'
+                        behavior: 'auto',
+                        kml: 'auto'
                     }, function() {
                         self.done = true;
                         if (typeof callback === 'function') {
@@ -207,7 +195,7 @@
                 };
                 head = document.getElementsByTagName('head')[0];
                 script = document.createElement('script');
-                script.src = 'http://api.maps.nokia.com/2.2.1/jsl.js?with=all';
+                script.src = 'http://api.maps.nokia.com/2.2.1/jsl.js';
                 script.type = 'text/javascript';
                 script.charset = "utf-8";
                 script.onreadystatechange = function() {
@@ -246,6 +234,10 @@
                 //$this.data(MQUEUE).executeAll(context);
                 $this.trigger($.Event(joviEvents.INIT_DONE));
             });
+        },
+        apiAction: function(action) {
+            var a = Array.prototype.slice.call(arguments, 1);
+            _maps[$(this).attr('id')][action].apply(_maps[$(this).attr('id')], a);
         },
         dropMarker: function(where, options) {
             var self = this,
@@ -359,7 +351,34 @@
                 mType = map.NORMAL;
             }
             map.set('baseMapType', mType);
+        },
+        parseKml: function(kmlFile, callback) {
+            var $this = $(this),
+                self = this,
+                mapID = $this.attr('id'),
+                map = _maps[mapID],
+                kml = new _mapsAPI.kml.Manager();
+
+            //Check if a map was initialized here
+            _initialized.call($this);
+
+            kml.addObserver("state", function kmlLoadStateChange(kmlManager) {
+                // KML file was successfully loaded
+                if (kmlManager.state == "finished") {
+                    // KML file was successfully parsed
+                    resultSet = new _mapsAPI.kml.component.KMLResultSet(kmlManager.kmlDocument, map);
+                    resultSet.addObserver("state", function finishedStateHandler(resultSet) {
+                        if (resultSet.state == "finished") {
+                            callback.call(self, resultSet);
+                        }
+                    });
+                    // Add the container to the map's object collection so they will be rendered onto the map.
+                    map.objects.add(resultSet.create());
+                }
+            });
+            kml.parseKML(kmlFile);
         }
+
     };
 
     $.fn.jOVI = function(method) {
