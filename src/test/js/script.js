@@ -9,7 +9,7 @@ $(window).load(function(){
     
     //1- Simple Map
     var simpleMap = getTestTemplate ('Simple Map', 'test-map-' + counter++).appendTo (container);
-    simpleMap.children('.map').jOVI();
+    simpleMap.children('.map').jOVI({}, "_peU-uCkp-j8ovkzFGNU", "gBoUkAMoxoqIWfxWA5DuMQ");
     
     //2- Simple Marker
     var simpleMarker = getTestTemplate ('Simple Marker', 'test-map-' + counter++).appendTo (container);
@@ -30,13 +30,16 @@ $(window).load(function(){
                             zoom: 12,                        //Zoom level
                             behavior: true,                  //Essentially mouse dragging and scrolling
                             zoomBar: false,                  //Zoom bar
-                            scaleBar: false,                 //Scale bar at the bottom
+                            scaleBar: true,                 //Scale bar at the bottom
                             overview: true,                  //Little zoomed-out view (bottom-right)
+                            traffic: true,                   //Control to show/hide traffic density
+                            publicTransport: true,           //Control to show/hide public transport routes
                             viewControl: true,               //Control for panning
-                            rightClick: true,                //Mouse right click enabled
+                            contextMenu: true,               //Enable context menu on mouse right click or long-press
                             typeSelector: true,              //Controls to choose map, satellite or terrain
-                            searchManager: true,             //Right click  gives info on the location
-                            routingManager: true             //Right click allows to show routes on the map
+                            positioning: true,              //Controls to choose map, satellite or terrain
+                            searchManager: false,             //Right click  gives info on the location
+                            routingManager: false            //Right click allows to show routes on the map
                         }).jOVI ('setType', 'terrain');      //type can be map, satellite, terrain
     
     //5- Marker Events
