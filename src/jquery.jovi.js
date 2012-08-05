@@ -236,8 +236,9 @@
             });
         },
         apiAction: function(action) {
-            var a = Array.prototype.slice.call(arguments, 1);
-            _maps[$(this).attr('id')][action].apply(_maps[$(this).attr('id')], a);
+            var a = Array.prototype.slice.call(arguments, 1),
+                map = _maps[$(this).attr('id')];
+            map[action].apply(map, a);
         },
         dropMarker: function(where, options) {
             var self = this,
