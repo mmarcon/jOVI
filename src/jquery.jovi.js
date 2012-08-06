@@ -235,10 +235,8 @@
                 $this.trigger($.Event(joviEvents.INIT_DONE));
             });
         },
-        apiAction: function(action) {
-            var a = Array.prototype.slice.call(arguments, 1),
-                map = _maps[$(this).attr('id')];
-            map[action].apply(map, a);
+        map: function(callback) {
+            callback.call($(this), _maps[$(this).attr('id')]);
         },
         dropMarker: function(where, options) {
             var self = this,
@@ -367,6 +365,19 @@
                 // KML file was successfully loaded
                 if (kmlManager.state == "finished") {
                     // KML file was successfully parsed
+                    callback.call(self, kmlManager);
+                }
+            });
+            kml.parseKML(kmlFile);
+        },
+        addKml: function(kmlFile, callback) {
+            // Helper to simplify adding a KML file to the map
+            var $this = $(this),
+                self = this,
+                mapID = $this.attr('id'),
+                map = _maps[mapID];
+
+            $this.jOVI('parseKml', kmlFile, function(kmlManager) {
                     resultSet = new _mapsAPI.kml.component.KMLResultSet(kmlManager.kmlDocument, map);
                     resultSet.addObserver("state", function finishedStateHandler(resultSet) {
                         if (resultSet.state == "finished") {
@@ -375,9 +386,7 @@
                     });
                     // Add the container to the map's object collection so they will be rendered onto the map.
                     map.objects.add(resultSet.create());
-                }
             });
-            kml.parseKML(kmlFile);
         }
 
     };
