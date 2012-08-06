@@ -71,14 +71,16 @@ $(window).load(function() {
                                                                          })
                                  .jOVI ('setType', 'satellite')
                                  .jOVI ('showInfoBubble', [40.716667, -74], {content: content});
-    //8- Attempt to invoke methods on a map never initialized
-    var error = getTestTemplate ('Invoke methods on a map never initialized (jOVI throws exception)', 'test-map-' + counter++).appendTo (container);
-    try {
-        error.children('.map').jOVI('setCenter',  [40.69, -74.045278]);
-    }
-    catch (e) {
-        error.children('.map').text(e.toString());
-    }
+    
+    //8- Attempt to invoke methods on a map never initialized (OLD BEHAVIOR, no longer valid)
+    // var error = getTestTemplate ('Invoke methods on a map never initialized (jOVI throws exception)', 'test-map-' + counter++).appendTo (container);
+    // try {
+    //     error.children('.map').jOVI('setCenter',  [40.69, -74.045278]);
+    // }
+    // catch (e) {
+    //     error.children('.map').text(e.toString());
+    // }
+    
     //9- Map events
     var me = getTestTemplate ('Map Events', 'test-map-' + counter++).appendTo (container);
     me.children('.map').jOVI ({center: [40.716667, -74], mapLoaded: function(e) {console.log ('mapLoaded callback was called')}})

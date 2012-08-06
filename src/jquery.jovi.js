@@ -50,11 +50,6 @@
             };
             _mapsAPI.util.ApplicationContext.set(_cachedCredentials);
         },
-        _initialized = function() {
-            if (this.data(JOVI) !== true) {
-                $.error('jOVI map was never initialized on this container');
-            }
-        },
         _initMap = function(target, settings) {
             var components = [],
                 mapID;
@@ -263,9 +258,6 @@
                     "dragend": [_eventProxy || $.noop, false, null]
                 };
 
-            //Check if a map was initialized here
-            _initialized.call($(this));
-
             settings = $.extend({}, defaultOptions, options);
 
             settings.textPen = {
@@ -295,9 +287,6 @@
                 },
                 settings, bubbles;
 
-            //Check if a map was initialized here
-            _initialized.call($(this));
-
             settings = $.extend({}, defaultOptions, options);
             if (settings.content) {
                 if (settings.content.jquery) {
@@ -315,16 +304,10 @@
             var $this = $(this),
                 animationType = withAnimation ? 'default' : 'none';
 
-            //Check if a map was initialized here
-            _initialized.call($this);
-
             _maps[$this.attr('id')].setCenter(where, animationType);
         },
         setZoom: function(level) {
             var $this = $(this);
-
-            //Check if a map was initialized here
-            _initialized.call($this);
 
             _maps[$this.attr('id')].set('zoomLevel', level);
         },
@@ -332,9 +315,6 @@
             var $this = $(this),
                 map = _maps[$this.attr('id')],
                 mType;
-
-            //Check if a map was initialized here
-            _initialized.call($this);
 
             switch (type) {
             case 'map':
@@ -357,9 +337,6 @@
                 mapID = $this.attr('id'),
                 map = _maps[mapID],
                 kml = new _mapsAPI.kml.Manager();
-
-            //Check if a map was initialized here
-            _initialized.call($this);
 
             kml.addObserver("state", function kmlLoadStateChange(kmlManager) {
                 // KML file was successfully loaded
@@ -408,7 +385,7 @@
         }
         return this.each(function() {
             var that = this;
-            // Use apply to sent arguments when calling our selected method
+            // Use apply to send arguments when calling our selected method
             if ((_loader && _loader.done) || init) {
                 method.apply(that, a);
             } else {
