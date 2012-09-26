@@ -165,7 +165,7 @@
             }
             var self = this;
             this.invoked = false;
-            this.done = false;
+            this.done = true;
             this.load = function() {
                 var script, head, loadFeatures;
                 if (self.invoked) {
@@ -203,6 +203,7 @@
                 head.appendChild(script);
             };
             if (autoload) {
+                this.done = false;
                 this.load();
             }
         },
@@ -212,7 +213,7 @@
     var methods = {
         init: function(options, appID, authToken) {
             if (!_loader) {
-                _loader = _JSLLoader(true);
+                _loader = _JSLLoader(options.autoload===undefined?true:options.autoload);
             }
             var $this = $(this),
                 context = this;
