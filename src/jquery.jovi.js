@@ -212,8 +212,9 @@
     // Create an object literal for the public methods
     var methods = {
         init: function(options, appID, authToken) {
+            options = options || {};
             if (!_loader) {
-                _loader = _JSLLoader(options.autoload===undefined?true:options.autoload);
+                _loader = _JSLLoader(options.autoload === undefined ? true:options.autoload);
             }
             var $this = $(this),
                 context = this;
