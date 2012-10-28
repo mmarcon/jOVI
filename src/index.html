@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>HTML5 boilerplate—all you really need…</title>
+    <style>
+        #map {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="jquery.jovi.js"></script>
+<script type="text/javascript">
+$(window).on('load', function(){
+    $('#map').jOVI();
+    setTimeout(function(){
+        $('#map').jOVI('center', [53.4, 24.41]).jOVI('zoom', 8).jOVI('type', 'smart');
+    }, 3000);
+});
+</script>
+</body>
+</html>

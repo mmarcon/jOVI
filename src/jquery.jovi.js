@@ -1,20 +1,128 @@
 (function($, w, doc){
     var plugin = 'jOVI',
         version = '0.2.0',
-        defaults = {}, H, _ns, _JSLALoader;
+        defaults, H, _ns, _JSLALoader,
+        _credentials;
 
-    function jHere(element, options){
+    _defaults = {
+        appId: '_peU-uCkp-j8ovkzFGNU',
+        authToken: 'gBoUkAMoxoqIWfxWA5DuMQ',
+        zoom: 10,
+        center: [52.49, 13.37],
+        behavior: true,
+        zoomBar: true,
+        scaleBar: true,
+        overview: false,
+        traffic: false,
+        publicTransport: false,
+        typeSelector: true,
+        positioning: false,
+        searchManager: false,
+        routingManager: false,
+        kmlManager: false
+    };
+
+    function jOVI(element, options){
         this.element = element;
-        this.options = $.extend({}, defaults, options);
+        this.options = $.extend({}, _defaults, options);
         this._defaults = defaults;
         this._plugin = plugin;
         this.init();
     }
 
-    H = jHere.prototype;
+    H = jOVI.prototype;
 
     H.init = function(){
         var options = this.options;
+        _JSLALoader.load().is.done($.proxy(this.makemap, this));
+    };
+
+    H.makemap = function(){
+        var options = this.options,
+            component = _ns.map.component,
+            components = [];
+        //First of all sort out the credential thingy
+        _credentials = _credentials || {
+            appId: options.appId,
+            authenticationToken: options.authToken
+        };
+        _ns.util.ApplicationContext.set(_credentials);
+
+        //and now make the map
+        $.data(this.element, plugin, true);
+
+        //Setup the components
+        //TODO: I really don't like this way of handing it
+        if (options.behavior) {
+            components.push(new component.Behavior());
+        }
+        if (options.zoomBar) {
+            components.push(new component.ZoomBar());
+        }
+        if (options.scaleBar) {
+            components.push(new component.ScaleBar());
+        }
+        if (options.overview) {
+            components.push(new component.Overview());
+        }
+        if (options.typeSelector) {
+            components.push(new component.TypeSelector());
+        }
+        if (options.positioning) {
+            components.push(new _ns.positioning.component.Positioning());
+        }
+        if (options.traffic) {
+            components.push(new component.Traffic());
+        }
+        if (options.publicTransport) {
+            components.push(new component.PublicTransport());
+        }
+        if (options.contextMenu && component.ContextMenu) {
+            components.push(new component.ContextMenu());
+        }
+        this.map = new _ns.map.Display(this.element, {
+            zoomLevel: options.zoom,
+            center: options.center,
+            components: components
+        });
+    };
+
+    H.center = function(newCenter){
+        this.map.setCenter(newCenter);
+    };
+
+    H.zoom = function(newZoomLevel){
+        this.map.set('zoomLevel', newZoomLevel);
+    };
+
+    H.type = function(newType){
+        var map = this.map;
+        switch (newType) {
+            case 'map':
+                newType = map.NORMAL;
+                break;
+            case 'satellite':
+                newType = map.SATELLITE;
+                break;
+            case 'terrain':
+                newType = map.TERRAIN;
+                break;
+            case 'smart':
+                newType = map.SMARTMAP;
+                break;
+            default:
+                newType = map.NORMAL;
+        }
+        map.set('baseMapType', newType);
+    };
+
+    //This function returns the original map
+    //object. This is useful when advanced operations
+    //that are not exposed by this plugin need to be
+    //performed. Check api.maps.nokia.com for the
+    //documentation.
+    H.map = function(closure){
+        closure(this.map);
     };
 
     _JSLALoader = {};
@@ -55,11 +163,12 @@
     };
 
     $.fn[plugin] = function(options) {
+        var args = arguments;
         return this.each(function() {
-            var pluginObj, method, args, key = 'plugin_' + plugin;
+            var pluginObj, method, key = 'plugin_' + plugin;
             pluginObj = $.data(this, key);
             if (!pluginObj) {
-                pluginObj = new Plugin(this, options);
+                pluginObj = new jOVI(this, options);
                 $.data(this, key, pluginObj);
             } else {
                 //Plugin is already initialized
@@ -70,12 +179,11 @@
                 }
                 method = options;
                 //Get the arguments
-                args = Array.prototype.slice.call(arguments, 0);
-                args.shift();
-                if (typeof pluginObj.prototype[method] !== 'function') {
+                args = Array.prototype.slice.call(args, 1);
+                if (typeof pluginObj[method] !== 'function') {
                     $.error(plugin + '::Method ' + method + ' does not exist');
                 }
-                pluginObj.prototype[method].apply(pluginObj, args);
+                pluginObj[method].apply(pluginObj, args);
             }
         });
     };
