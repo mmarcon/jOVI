@@ -7,7 +7,7 @@
     _defaults = {
         appId: '_peU-uCkp-j8ovkzFGNU',
         authToken: 'gBoUkAMoxoqIWfxWA5DuMQ',
-        zoom: 10,
+        zoom: 12,
         center: [52.49, 13.37],
         behavior: true,
         zoomBar: true,
@@ -19,7 +19,15 @@
         positioning: false,
         searchManager: false,
         routingManager: false,
-        kmlManager: false
+        kmlManager: false,
+        marker: {
+            text: '',
+            textColor: '#333333',
+            fill: '#ff6347',
+            stroke: '#333333',
+            shape: 'balloon',
+            icon: undefined
+        }
     };
 
     function jOVI(element, options){
@@ -116,14 +124,63 @@
         map.set('baseMapType', newType);
     };
 
+    H.marker = function(position, markerOptions) {
+        var markerListeners = {
+                "click": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "dblclick": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "mousemove": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "mouseover": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "mouseout": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "mouseenter": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "mouseleave": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "longpress": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "dragstart": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "drag": [$.proxy(triggerEvent, this) || $.noop, false, null],
+                "dragend": [$.proxy(triggerEvent, this) || $.noop, false, null]
+            };
+        markerOptions = $.extend({}, _defaults.marker, markerOptions);
+        //Normalize settings
+        markerOptions.textPen = markerOptions.textPen || {strokeColor: markerOptions.textColor};
+        markerOptions.pen = markerOptions.pen || {strokeColor: markerOptions.stroke};
+        markerOptions.brush = markerOptions.brush || {color: markerOptions.fill};
+        markerOptions.eventListener = markerListeners;
+
+        if (markerOptions.icon) {
+            this.map.objects.add(new _ns.map.Marker(position, markerOptions));
+        } else {
+            this.map.objects.add(new _ns.map.StandardMarker(position, markerOptions));
+        }
+    };
+
     //This function returns the original map
     //object. This is useful when advanced operations
     //that are not exposed by this plugin need to be
     //performed. Check api.maps.nokia.com for the
     //documentation.
-    H.map = function(closure){
-        closure(this.map);
+    H.originalMap = function(closure){
+        //Be a good citizen:
+        //closure context will be the DOM element
+        //the jQuery object refers to, and argument
+        //is the Display object, i.e. the map.
+        closure.call(this.element, this.map);
     };
+
+    function triggerEvent(event) {
+        var handler = event.target[event.type];
+        if ($.isFunction(handler)) {
+            var e = $.Event(event.type, {
+                originalEvent: event,
+                geo: {
+                    latitude: event.target.coordinate.latitude,
+                    longitude: event.target.coordinate.longitude
+                },
+                target: event.target
+            });
+            //When the event listener is called then
+            //the context is the DOM element containing the map.
+            handler.call(this.element, e);
+        }
+    }
 
     _JSLALoader = {};
     _JSLALoader.is = false;
@@ -183,7 +240,14 @@
                 if (typeof pluginObj[method] !== 'function') {
                     $.error(plugin + '::Method ' + method + ' does not exist');
                 }
-                pluginObj[method].apply(pluginObj, args);
+                //Only execute method when we are sure JSLA
+                //is loaded and therefore everything else
+                //has been initialized.
+                //jQuery's deferred object takes care of queuing
+                //actions.
+                _JSLALoader.load().is.done(function(){
+                    pluginObj[method].apply(pluginObj, args);
+                });
             }
         });
     };

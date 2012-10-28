@@ -22,10 +22,14 @@
 <script type="text/javascript">
 $(window).on('load', function(){
     $('#map').jOVI();
-    setTimeout(function(){
-        $('#map').jOVI('center', [53.4, 24.41]).jOVI('zoom', 8).jOVI('type', 'smart');
-    }, 3000);
-});
+    // setTimeout(function(){
+    //     $('#map').jOVI('center', [53.4, 24.41]).jOVI('zoom', 8).jOVI('type', 'smart');
+    // }, 3000);
+    $('#map').jOVI('type', 'smart').jOVI('marker', [52.49, 13.37], {text: '●', textColor: '#fff', fill: '#004C9A',
+        click: function(e){
+            alert(JSON.stringify(e.geo));
+        }});
+    });
 </script>
 </body>
 </html>
