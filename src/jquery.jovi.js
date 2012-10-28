@@ -27,6 +27,11 @@
             stroke: '#333333',
             shape: 'balloon',
             icon: undefined
+        },
+        bubble: {
+            content: '',
+            closable: true,
+            onclose: $.noop
         }
     };
 
@@ -150,6 +155,19 @@
         } else {
             this.map.objects.add(new _ns.map.StandardMarker(position, markerOptions));
         }
+    };
+
+    H.bubble = function(position, bubbleOptions) {
+        var bubbleComponent;
+        bubbleOptions = $.extend({}, _defaults.bubble, bubbleOptions);
+        if(bubbleOptions.content.jquery) {
+            //This is a little hack to fix word-wrap which is set to nowrap by the OVI framework
+            bubbleOptions.content.css('white-space', 'normal');
+            bubbleOptions.content = $('<div/>').append(bubbleOptions.content.clone()).html();
+        }
+        bubbles = this.map.getComponentById('InfoBubbles') ||
+                  this.map.addComponent(new _ns.map.component.InfoBubbles());
+        bubbles.openBubble(bubbleOptions.content, {latitude: position[0], longitude: position[1]}, bubbleOptions.onclose, !bubbleOptions.closable);
     };
 
     //This function returns the original map
