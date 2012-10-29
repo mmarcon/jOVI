@@ -9,6 +9,9 @@
         authToken: 'gBoUkAMoxoqIWfxWA5DuMQ',
         zoom: 12,
         center: [52.49, 13.37],
+        enable: ['behavior', 'zoombar', 'scalebar', 'typeselector'],
+        //All available components. Commented out, saves bytes.
+        //all: ['behavior', 'zoombar', 'scalebar', 'typeselector', 'overview', 'traffic', 'publictransport', 'positioning', 'rightclick', 'contextmenu'],
         behavior: true,
         zoomBar: true,
         scaleBar: true,
@@ -17,9 +20,7 @@
         publicTransport: false,
         typeSelector: true,
         positioning: false,
-        searchManager: false,
-        routingManager: false,
-        kmlManager: false,
+
         marker: {
             text: '',
             textColor: '#333333',
@@ -54,6 +55,14 @@
         var options = this.options,
             component = _ns.map.component,
             components = [];
+
+        //Positioning is incovieniently
+        //located in a namespace that is
+        //separated from all the other comps.
+        //Place where it should have been in
+        //the first place.
+        component.Positioning = _ns.positioning.component.Positioning;
+
         //First of all sort out the credential thingy
         _credentials = _credentials || {
             appId: options.appId,
@@ -65,34 +74,13 @@
         $.data(this.element, plugin, true);
 
         //Setup the components
-        //TODO: I really don't like this way of handing it
-        if (options.behavior) {
-            components.push(new component.Behavior());
-        }
-        if (options.zoomBar) {
-            components.push(new component.ZoomBar());
-        }
-        if (options.scaleBar) {
-            components.push(new component.ScaleBar());
-        }
-        if (options.overview) {
-            components.push(new component.Overview());
-        }
-        if (options.typeSelector) {
-            components.push(new component.TypeSelector());
-        }
-        if (options.positioning) {
-            components.push(new _ns.positioning.component.Positioning());
-        }
-        if (options.traffic) {
-            components.push(new component.Traffic());
-        }
-        if (options.publicTransport) {
-            components.push(new component.PublicTransport());
-        }
-        if (options.contextMenu && component.ContextMenu) {
-            components.push(new component.ContextMenu());
-        }
+        $.each(component, $.proxy(function(c, Constructor){
+            console.log(c);
+            if($.inArray(c.toLowerCase(), this.options.enable) > -1) {
+                components.push(new Constructor());
+            }
+        }, this));
+
         this.map = new _ns.map.Display(this.element, {
             zoomLevel: options.zoom,
             center: options.center,
@@ -181,6 +169,8 @@
                 var container, bbox;
                 if (resultSet.state == "finished") {
                     if(zoomToKML) {
+                        //Then try to zoom the map to the area
+                        //described by the KML
                         container = resultSet.container.objects.get(0);
                         bbox = container.getBoundingBox();
                         if (bbox) {

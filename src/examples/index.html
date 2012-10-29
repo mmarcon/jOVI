@@ -21,7 +21,7 @@
 <script type="text/javascript" src="../jquery.jovi.js"></script>
 <script type="text/javascript">
 $(window).on('load', function(){
-    $('#map').jOVI();
+    $('#map').jOVI({enable: ['behavior', 'zoombar', 'typeselector', 'positioning', 'contextmenu']});
     // setTimeout(function(){
     //     $('#map').jOVI('center', [53.4, 24.41]).jOVI('zoom', 8).jOVI('type', 'smart');
     // }, 3000);
