@@ -4,7 +4,7 @@
         defaults, H, _ns, _JSLALoader,
         _credentials;
 
-    _defaults = {
+    defaults = {
         appId: '_peU-uCkp-j8ovkzFGNU',
         authToken: 'gBoUkAMoxoqIWfxWA5DuMQ',
         zoom: 12,
@@ -37,7 +37,7 @@
 
     function jOVI(element, options){
         this.element = element;
-        this.options = $.extend({}, _defaults, options);
+        this.options = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._plugin = plugin;
         this.init();
@@ -143,7 +143,7 @@
                 "drag": [$.proxy(triggerEvent, this) || $.noop, false, null],
                 "dragend": [$.proxy(triggerEvent, this) || $.noop, false, null]
             };
-        markerOptions = $.extend({}, _defaults.marker, markerOptions);
+        markerOptions = $.extend({}, defaults.marker, markerOptions);
         //Normalize settings
         markerOptions.textPen = markerOptions.textPen || {strokeColor: markerOptions.textColor};
         markerOptions.pen = markerOptions.pen || {strokeColor: markerOptions.stroke};
@@ -159,7 +159,7 @@
 
     H.bubble = function(position, bubbleOptions) {
         var bubbleComponent;
-        bubbleOptions = $.extend({}, _defaults.bubble, bubbleOptions);
+        bubbleOptions = $.extend({}, defaults.bubble, bubbleOptions);
         if(bubbleOptions.content.jquery) {
             //This is a little hack to fix word-wrap which is set to nowrap by the OVI framework
             bubbleOptions.content.css('white-space', 'normal');
