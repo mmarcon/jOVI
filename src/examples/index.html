@@ -18,7 +18,7 @@
 <body>
 <div id="map"></div>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="jquery.jovi.js"></script>
+<script type="text/javascript" src="../jquery.jovi.js"></script>
 <script type="text/javascript">
 $(window).on('load', function(){
     $('#map').jOVI();
@@ -31,7 +31,8 @@ $(window).on('load', function(){
         }}).jOVI('marker', [52.49, 13.39], {text: '❤', textColor: '#fff', fill: '#004C9A',
         click: function(e){
             $(this).jOVI('bubble', [52.49, 13.39], {content: JSON.stringify(e.geo), closable: false});
-        }});;
+        }});
+    $('#map').jOVI('kml', 'resources/berlin.kml', true);
     });
 </script>
 </body>

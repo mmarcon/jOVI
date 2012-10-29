@@ -170,6 +170,32 @@
         bubbles.openBubble(bubbleOptions.content, {latitude: position[0], longitude: position[1]}, bubbleOptions.onclose, !bubbleOptions.closable);
     };
 
+    H.kml = function(KMLFile, zoomToKML, ondone) {
+        if(isFunction(zoomToKML)) {
+            ondone = zoomToKML;
+            zoomToKML = false;
+        }
+        parseKML.call(this, KMLFile, $.proxy(function(kmlManager){
+            var resultSet = new _ns.kml.component.KMLResultSet(kmlManager.kmlDocument, this.map);
+            resultSet.addObserver("state", $.proxy(function(resultSet) {
+                var container, bbox;
+                if (resultSet.state == "finished") {
+                    if(zoomToKML) {
+                        container = resultSet.container.objects.get(0);
+                        bbox = container.getBoundingBox();
+                        if (bbox) {
+                            this.map.zoomTo(bbox);
+                        }
+                    }
+                    if(isFunction(ondone)) {
+                        ondone.call(this, resultSet);
+                    }
+                }
+            }, this));
+            this.map.objects.add(resultSet.create());
+        }, this));
+    };
+
     //This function returns the original map
     //object. This is useful when advanced operations
     //that are not exposed by this plugin need to be
@@ -182,6 +208,20 @@
         //is the Display object, i.e. the map.
         closure.call(this.element, this.map);
     };
+
+    //Note that this function is private
+    //and must be called with a jOVI object
+    //as the context.
+    function parseKML(KMLFile, callback) {
+        var kmlManager = new _ns.kml.Manager();
+        kmlManager.addObserver('state', $.proxy(function(kmlManager){
+            if(kmlManager.state === 'finished') {
+                //KML file was successfully parsed
+                callback.call(this, kmlManager);
+            }
+        }, this));
+        kmlManager.parseKML(KMLFile);
+    }
 
     function triggerEvent(event) {
         var handler = event.target[event.type];
@@ -198,6 +238,10 @@
             //the context is the DOM element containing the map.
             handler.call(this.element, e);
         }
+    }
+
+    function isFunction(fn) {
+        return typeof fn === 'function';
     }
 
     _JSLALoader = {};

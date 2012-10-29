@@ -1,3 +1,0 @@
-Java Mini Web Server
-A small web server, less than 4kb in size!
-http://www.jibble.org/miniwebserver/
