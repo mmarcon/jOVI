@@ -75,7 +75,6 @@
 
         //Setup the components
         $.each(component, $.proxy(function(c, Constructor){
-            console.log(c);
             if($.inArray(c.toLowerCase(), this.options.enable) > -1) {
                 components.push(new Constructor());
             }
@@ -118,19 +117,21 @@
     };
 
     H.marker = function(position, markerOptions) {
-        var markerListeners = {
-                "click": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "dblclick": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "mousemove": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "mouseover": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "mouseout": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "mouseenter": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "mouseleave": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "longpress": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "dragstart": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "drag": [$.proxy(triggerEvent, this) || $.noop, false, null],
-                "dragend": [$.proxy(triggerEvent, this) || $.noop, false, null]
-            };
+        var markerListeners = {},
+            supportedEvents = ['click',
+                               'dblclick',
+                               'mousemove',
+                               'mouseover',
+                               'mouseover',
+                               'mouseout',
+                               'mouseenter',
+                               'mouseleave',
+                               'longpress'],
+            centralizedHandler = $.proxy(triggerEvent, this);
+        $.each(supportedEvents, function(i, v){
+            markerListeners[v] = [centralizedHandler, false, null];
+        });
+
         markerOptions = $.extend({}, defaults.marker, markerOptions);
         //Normalize settings
         markerOptions.textPen = markerOptions.textPen || {strokeColor: markerOptions.textColor};
