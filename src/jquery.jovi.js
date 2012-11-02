@@ -33,6 +33,11 @@
             content: '',
             closable: true,
             onclose: $.noop
+        },
+        heatmap: {
+            max: 20,
+            opacity: 0.8,
+            coarseness: 2
         }
     };
 
@@ -187,17 +192,45 @@
         }, this));
     };
 
+    //Values are normalizes between 0 and 1
+    //hmOptions can have a `colors` property that can be used to
+    //customize the heatmap look.
+    //the object is of type:
+    //    colors = {
+    //        stops: {"0": "rgba(0, 0, 64, 1)", "0.3": "rgba(0, 0, 64, 1)", ...}
+    //    }
+    H.heatmap = function(data, type, hmOptions) {
+        var hm;
+        type = type || 'value';
+        if (!type.match(/^density|value$/)) {
+            type = 'value';
+        }
+        hmOptions = hmOptions || {};
+        hmOptions.type = type;
+        hmOptions = $.extend({}, defaults.heatmap, hmOptions);
+        hm = new _ns.heatmap.Overlay(hmOptions);
+        hm.addData(data);
+        this.map.overlays.add(hm);
+    };
+
     //This function returns the original map
     //object. This is useful when advanced operations
     //that are not exposed by this plugin need to be
     //performed. Check api.maps.nokia.com for the
     //documentation.
+    //closure should look like this:
+    //
+    //    function(map, here){
+    //        this is the DOM element
+    //        map is the JSLA map object
+    //        here is the whole JSLA API namespace
+    //    }
     H.originalMap = function(closure){
         //Be a good citizen:
         //closure context will be the DOM element
         //the jQuery object refers to, and argument
         //is the Display object, i.e. the map.
-        closure.call(this.element, this.map);
+        closure.call(this.element, this.map, _ns);
     };
 
     //Note that this function is private
@@ -248,7 +281,7 @@
         load = function(){
             _ns = nokia.maps;
             _ns.Features.load({map: 'auto', ui: 'auto', search: 'auto', routing: 'auto',
-                               positioning: 'auto', behavior: 'auto', kml: 'auto'},
+                               positioning: 'auto', behavior: 'auto', kml: 'auto', heatmap: 'auto'},
                               function(){_JSLALoader.is.resolve();});
         };
         head = doc.getElementsByTagName('head')[0];
