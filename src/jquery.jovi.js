@@ -10,8 +10,8 @@
         zoom: 12,
         center: [52.49, 13.37],
         enable: ['behavior', 'zoombar', 'scalebar', 'typeselector'],
-        //All available components. Commented out, saves bytes.
-        //all: ['behavior', 'zoombar', 'scalebar', 'typeselector', 'overview', 'traffic', 'publictransport', 'positioning', 'rightclick', 'contextmenu'],
+        /*All available components. Commented out, saves bytes.*/
+        /*all: ['behavior', 'zoombar', 'scalebar', 'typeselector', 'overview', 'traffic', 'publictransport', 'positioning', 'rightclick', 'contextmenu']*/
         marker: {
             text: '',
             textColor: '#333333',
@@ -85,14 +85,38 @@
         });
     };
 
+    //### center the map
+    //`$('.selector').jHERE('center', centerObject);`
+    //
+    //`centerObject` can be an object of type
+    //
+    //`{latitude: -43, longitude: 55}`
+    //
+    //or an array
+    //
+    //`[-43, 55]`
     H.center = function(newCenter){
         this.map.setCenter(newCenter);
     };
 
+    //### zoom the map
+    //`$('.selector').jHERE('zoom', zoomLevel);`
+    //
+    //`zoomLevel` is a positive integer
     H.zoom = function(newZoomLevel){
         this.map.set('zoomLevel', newZoomLevel);
     };
 
+    //### set the map type
+    //`$('.selector').jHERE('type', mapType);`
+    //
+    //`mapType` is a string:
+    //
+    // 1. `'map'`: the normal map type. This is the *default*.
+    // 2. `'smart'`: a map with most of the colors grayed out. Useful for data visualization.
+    // 3. `'pt'`: a smart map where the tiles also contain the **public transport lines**.
+    // 4. `'satellite'`: satellite view.
+    // 5. `'terrain'`: terrain view.
     H.type = function(newType){
         var map = this.map,
             types = {
@@ -106,6 +130,25 @@
         map.set('baseMapType', newType);
     };
 
+    //### add markers to the map
+    //`$('.selector').jHERE('marker', positionObject, markerOptions);`
+    //
+    //`positionObject` can be an object of type
+    //
+    //`{latitude: -43, longitude: 55}`
+    //
+    //or an array
+    //
+    //`[-43, 55]`
+    //
+    //`markerOptions` can be an object of type
+    //<pre><code>{
+    //  text: '!',
+    //  textColor: '#333333',
+    //  fill: '#ff6347',
+    //  stroke: '#333333',
+    //  icon: 'urlToIcon'
+    //}</code></pre>
     H.marker = function(position, markerOptions) {
         var markerListeners = {},
             mouse = 'mouse', click = 'click',
@@ -136,6 +179,25 @@
         }
     };
 
+    //### add bubbles to the map
+    //`$('.selector').jHERE('bubble', positionObject, bubbleOptions);`
+    //
+    //`positionObject` can be an object of type
+    //
+    //`{latitude: -43, longitude: 55}`
+    //
+    //or an array
+    //
+    //`[-43, 55]`
+    //
+    //`bubbleOptions` can be an object of type
+    //<pre><code>{
+    //  content: 'Hello World!',
+    //  closable: true,
+    //  onclose: function(){}
+    //}</code></pre>
+    //
+    //`content` can be a String or a jQuery object.
     H.bubble = function(position, bubbleOptions) {
         var bubbleComponent;
         bubbleOptions = $.extend({}, defaults.bubble, bubbleOptions);
@@ -149,6 +211,15 @@
         bubbles.openBubble(bubbleOptions.content, {latitude: position[0], longitude: position[1]}, bubbleOptions.onclose, !bubbleOptions.closable);
     };
 
+    //### Display KMLs on the map
+    //`$('.selector').jHERE('kml', KMLfile, zoomToKML, ondone);`
+    //
+    //`KMLfile` is the URL to a KML file
+    //
+    //`zoomToKML` is a boolean. If set to true, once the KML has been parsed
+    //and displayed the map will be zoomed to the bounding box of the KML.
+    //
+    //`ondone` is a function, called once the KML has been rendered.
     H.kml = function(KMLFile, zoomToKML, ondone) {
         if(isFunction(zoomToKML)) {
             ondone = zoomToKML;
@@ -160,8 +231,10 @@
                 var container, bbox;
                 if (resultSet.state == "finished") {
                     if(zoomToKML) {
-                        //Then try to zoom the map to the area
-                        //described by the KML
+                        /*
+                         Then try to zoom the map to the area
+                         described by the KML
+                        */
                         container = resultSet.container.objects.get(0);
                         bbox = container.getBoundingBox();
                         if (bbox) {
@@ -177,13 +250,28 @@
         }, this));
     };
 
-    //Values are normalizes between 0 and 1
-    //hmOptions can have a `colors` property that can be used to
+    //### Add heatmap layers to the map
+    //`$('.selector').jHERE('heatmap', data, type, options);`
+    //
+    //`data` is an array of objects of type:
+    //
+    //`{latitude: 43, longitude: 26, value: 35}`
+    //
+    //Values will be automatically **normalized between 0 and 1**.
+    //
+    //`type` defines the type of heatmap, can be `density` or `value`. [Heatmaps on Wikipedia](http://en.wikipedia.org/wiki/Heat_map).
+    //
+    //`options` is an object that can have a `colors` property used to
     //customize the heatmap look.
-    //the object is of type:
-    //    colors = {
-    //        stops: {"0": "rgba(0, 0, 64, 1)", "0.3": "rgba(0, 0, 64, 1)", ...}
-    //    }
+    //
+    //`colors` is an object of type:
+    //<pre><code>{
+    //  stops: {
+    //    "0": "rgba(0, 0, 64, 1)",
+    //    "0.3": "rgba(0, 0, 64, 1)",
+    //    ...
+    //  }
+    //}</code></pre>
     H.heatmap = function(data, type, hmOptions) {
         var hm;
         type = type || 'value';
@@ -198,34 +286,39 @@
         this.map.overlays.add(hm);
     };
 
-    //This function returns the original map
-    //object. This is useful when advanced operations
+    //###Access the underlying JSLA framework
+    //`$('.selector').jHERE('originalMap', closure);`
+    //
+    //This is useful when advanced operations
     //that are not exposed by this plugin need to be
-    //performed. Check api.maps.nokia.com for the
+    //performed. Check [api.maps.nokia.com](http://api.maps.nokia.com) for the
     //documentation.
     //closure should look like this:
-    //
-    //    function(map, here){
-    //        this is the DOM element
-    //        map is the JSLA map object
-    //        here is the whole JSLA API namespace
-    //    }
+    //<pre><code>function(map, here){
+    //    this is the DOM element
+    //    map is the JSLA map object
+    //    here is the whole JSLA API namespace
+    //}</code></pre>
     H.originalMap = function(closure){
-        //Be a good citizen:
-        //closure context will be the DOM element
-        //the jQuery object refers to, and argument
-        //is the Display object, i.e. the map.
+        /*
+         Be a good citizen:
+         closure context will be the DOM element
+         the jQuery object refers to, and argument
+         is the Display object, i.e. the map.
+        */
         closure.call(this.element, this.map, _ns);
     };
 
-    //Note that this function is private
-    //and must be called with a jOVI object
-    //as the context.
+    /*
+     Note that this function is private
+     and must be called with a jOVI object
+     as the context.
+    */
     function parseKML(KMLFile, callback) {
         var kmlManager = new _ns.kml.Manager();
         kmlManager.addObserver('state', bind(function(kmlManager){
             if(kmlManager.state === 'finished') {
-                //KML file was successfully parsed
+                /*KML file was successfully parsed*/
                 callback.call(this, kmlManager);
             }
         }, this));
@@ -243,8 +336,10 @@
                 },
                 target: event.target
             });
-            //When the event listener is called then
-            //the context is the DOM element containing the map.
+            /*
+             When the event listener is called then
+             the context is the DOM element containing the map.
+            */
             handler.call(this.element, e);
         }
     }
