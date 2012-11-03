@@ -86,7 +86,7 @@
     };
 
     //### center the map
-    //`$('.selector').jHERE('center', centerObject);`
+    //`$('.selector').jOVI('center', centerObject);`
     //
     //`centerObject` can be an object of type
     //
@@ -100,7 +100,7 @@
     };
 
     //### zoom the map
-    //`$('.selector').jHERE('zoom', zoomLevel);`
+    //`$('.selector').jOVI('zoom', zoomLevel);`
     //
     //`zoomLevel` is a positive integer
     H.zoom = function(newZoomLevel){
@@ -108,7 +108,7 @@
     };
 
     //### set the map type
-    //`$('.selector').jHERE('type', mapType);`
+    //`$('.selector').jOVI('type', mapType);`
     //
     //`mapType` is a string:
     //
@@ -131,7 +131,7 @@
     };
 
     //### add markers to the map
-    //`$('.selector').jHERE('marker', positionObject, markerOptions);`
+    //`$('.selector').jOVI('marker', positionObject, markerOptions);`
     //
     //`positionObject` can be an object of type
     //
@@ -180,7 +180,7 @@
     };
 
     //### add bubbles to the map
-    //`$('.selector').jHERE('bubble', positionObject, bubbleOptions);`
+    //`$('.selector').jOVI('bubble', positionObject, bubbleOptions);`
     //
     //`positionObject` can be an object of type
     //
@@ -212,7 +212,7 @@
     };
 
     //### Display KMLs on the map
-    //`$('.selector').jHERE('kml', KMLfile, zoomToKML, ondone);`
+    //`$('.selector').jOVI('kml', KMLfile, zoomToKML, ondone);`
     //
     //`KMLfile` is the URL to a KML file
     //
@@ -251,7 +251,7 @@
     };
 
     //### Add heatmap layers to the map
-    //`$('.selector').jHERE('heatmap', data, type, options);`
+    //`$('.selector').jOVI('heatmap', data, type, options);`
     //
     //`data` is an array of objects of type:
     //
@@ -287,17 +287,17 @@
     };
 
     //###Access the underlying JSLA framework
-    //`$('.selector').jHERE('originalMap', closure);`
+    //`$('.selector').jOVI('originalMap', closure);`
     //
     //This is useful when advanced operations
     //that are not exposed by this plugin need to be
     //performed. Check [api.maps.nokia.com](http://api.maps.nokia.com) for the
     //documentation.
     //closure should look like this:
-    //<pre><code>function(map, here){
+    //<pre><code>function(map, nokia){
     //    this is the DOM element
     //    map is the JSLA map object
-    //    here is the whole JSLA API namespace
+    //    nokia is the whole JSLA API namespace
     //}</code></pre>
     H.originalMap = function(closure){
         /*
