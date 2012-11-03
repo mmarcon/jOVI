@@ -2,7 +2,7 @@
     var plugin = 'jOVI',
         version = '0.2.0',
         defaults, H, _ns, _JSLALoader,
-        _credentials;
+        _credentials, bind = $.proxy;
 
     defaults = {
         appId: '_peU-uCkp-j8ovkzFGNU',
@@ -12,15 +12,6 @@
         enable: ['behavior', 'zoombar', 'scalebar', 'typeselector'],
         //All available components. Commented out, saves bytes.
         //all: ['behavior', 'zoombar', 'scalebar', 'typeselector', 'overview', 'traffic', 'publictransport', 'positioning', 'rightclick', 'contextmenu'],
-        behavior: true,
-        zoomBar: true,
-        scaleBar: true,
-        overview: false,
-        traffic: false,
-        publicTransport: false,
-        typeSelector: true,
-        positioning: false,
-
         marker: {
             text: '',
             textColor: '#333333',
@@ -53,7 +44,7 @@
 
     H.init = function(){
         var options = this.options;
-        _JSLALoader.load().is.done($.proxy(this.makemap, this));
+        _JSLALoader.load().is.done(bind(this.makemap, this));
     };
 
     H.makemap = function(){
@@ -61,25 +52,27 @@
             component = _ns.map.component,
             components = [];
 
-        //Positioning is incovieniently
-        //located in a namespace that is
-        //separated from all the other comps.
-        //Place where it should have been in
-        //the first place.
+        /*
+         Positioning is incovieniently
+         located in a namespace that is
+         separated from all the other comps.
+         Place where it should have been in
+         the first place.
+        */
         component.Positioning = _ns.positioning.component.Positioning;
 
-        //First of all sort out the credential thingy
+        /*First of all sort out the credential thingy*/
         _credentials = _credentials || {
             appId: options.appId,
             authenticationToken: options.authToken
         };
         _ns.util.ApplicationContext.set(_credentials);
 
-        //and now make the map
+        /*and now make the map*/
         $.data(this.element, plugin, true);
 
-        //Setup the components
-        $.each(component, $.proxy(function(c, Constructor){
+        /*Setup the components*/
+        $.each(component, bind(function(c, Constructor){
             if($.inArray(c.toLowerCase(), this.options.enable) > -1) {
                 components.push(new Constructor());
             }
@@ -101,44 +94,36 @@
     };
 
     H.type = function(newType){
-        var map = this.map;
-        switch (newType) {
-            case 'map':
-                newType = map.NORMAL;
-                break;
-            case 'satellite':
-                newType = map.SATELLITE;
-                break;
-            case 'terrain':
-                newType = map.TERRAIN;
-                break;
-            case 'smart':
-                newType = map.SMARTMAP;
-                break;
-            default:
-                newType = map.NORMAL;
-        }
+        var map = this.map,
+            types = {
+                map: map.NORMAL,
+                satellite: map.SATELLITE,
+                smart: map.SMARTMAP,
+                terrain: map.TERRAIN,
+                pt: map.SMART_PT
+            };
+        newType = types[newType] || types.map;
         map.set('baseMapType', newType);
     };
 
     H.marker = function(position, markerOptions) {
         var markerListeners = {},
-            supportedEvents = ['click',
-                               'dblclick',
-                               'mousemove',
-                               'mouseover',
-                               'mouseover',
-                               'mouseout',
-                               'mouseenter',
-                               'mouseleave',
+            mouse = 'mouse', click = 'click',
+            supportedEvents = [click,
+                               'dbl' + click,
+                               mouse + 'move',
+                               mouse + 'over',
+                               mouse + 'out',
+                               mouse + 'enter',
+                               mouse + 'leave',
                                'longpress'],
-            centralizedHandler = $.proxy(triggerEvent, this);
+            centralizedHandler = bind(triggerEvent, this);
         $.each(supportedEvents, function(i, v){
             markerListeners[v] = [centralizedHandler, false, null];
         });
 
         markerOptions = $.extend({}, defaults.marker, markerOptions);
-        //Normalize settings
+        /*Normalize settings*/
         markerOptions.textPen = markerOptions.textPen || {strokeColor: markerOptions.textColor};
         markerOptions.pen = markerOptions.pen || {strokeColor: markerOptions.stroke};
         markerOptions.brush = markerOptions.brush || {color: markerOptions.fill};
@@ -155,7 +140,7 @@
         var bubbleComponent;
         bubbleOptions = $.extend({}, defaults.bubble, bubbleOptions);
         if(bubbleOptions.content.jquery) {
-            //This is a little hack to fix word-wrap which is set to nowrap by the OVI framework
+            /*This is a little hack to fix word-wrap which is set to nowrap by JSLA*/
             bubbleOptions.content.css('white-space', 'normal');
             bubbleOptions.content = $('<div/>').append(bubbleOptions.content.clone()).html();
         }
@@ -169,9 +154,9 @@
             ondone = zoomToKML;
             zoomToKML = false;
         }
-        parseKML.call(this, KMLFile, $.proxy(function(kmlManager){
+        parseKML.call(this, KMLFile, bind(function(kmlManager){
             var resultSet = new _ns.kml.component.KMLResultSet(kmlManager.kmlDocument, this.map);
-            resultSet.addObserver("state", $.proxy(function(resultSet) {
+            resultSet.addObserver("state", bind(function(resultSet) {
                 var container, bbox;
                 if (resultSet.state == "finished") {
                     if(zoomToKML) {
@@ -238,7 +223,7 @@
     //as the context.
     function parseKML(KMLFile, callback) {
         var kmlManager = new _ns.kml.Manager();
-        kmlManager.addObserver('state', $.proxy(function(kmlManager){
+        kmlManager.addObserver('state', bind(function(kmlManager){
             if(kmlManager.state === 'finished') {
                 //KML file was successfully parsed
                 callback.call(this, kmlManager);
@@ -273,14 +258,14 @@
     _JSLALoader.load = function(){
         var head, jsla, load;
         if(_JSLALoader.is && _JSLALoader.is.state() === 'pending') {
-            //JSLA loading is already in progress
+            /*JSLA loading is already in progress*/
             return this;
         }
         _JSLALoader.is = $.Deferred();
-        //And load stuff
+        /*And load stuff*/
         load = function(){
             _ns = nokia.maps;
-            //TODO: make load cutomizable so we don't load unnecessary stuff.
+            /*TODO: make load cutomizable so we don't load unnecessary stuff.*/
             _ns.Features.load({map: 'auto', ui: 'auto', search: 'auto', routing: 'auto',
                                positioning: 'auto', behavior: 'auto', kml: 'auto', heatmap: 'auto'},
                               function(){_JSLALoader.is.resolve();});
@@ -292,17 +277,19 @@
         jsla.charset = "utf-8";
         jsla.onreadystatechange = function(){
             if (jsla.readyState == "loaded" || jsla.readyState == "complete") {
-                //The base JSLA has loaded. Trigger load of features
+                /*The base JSLA has loaded. Trigger load of features*/
                 load();
             }
         };
         jsla.onload = load;
-        //Append JSLA to head so it starts loading
+        /*Append JSLA to head so it starts loading*/
         head.appendChild(jsla);
-        //Returns _JSLALoader itself.
-        //Very elegant solution to do stuff
-        //like this:
-        //_JSLALoader.load().is.done(doStuff);
+        /*
+         Returns _JSLALoader itself.
+         Very elegant solution to do stuff
+         like this:
+         _JSLALoader.load().is.done(doStuff);
+        */
         return this;
     };
 
@@ -315,23 +302,27 @@
                 pluginObj = new jOVI(this, options);
                 $.data(this, key, pluginObj);
             } else {
-                //Plugin is already initialized
-                //Then we must be calling a method perhaps
-                //options must be the method then, so it should be a string
+                /*
+                 Plugin is already initialized
+                 Then we must be calling a method
+                 options must be the method then, so it should be a string
+                */
                 if (typeof options !== 'string') {
                     $.error(plugin + '::Plugin already initialized on this element, expected method.');
                 }
                 method = options;
-                //Get the arguments
+                /*Get the arguments*/
                 args = Array.prototype.slice.call(args, 1);
                 if (typeof pluginObj[method] !== 'function') {
                     $.error(plugin + '::Method ' + method + ' does not exist');
                 }
-                //Only execute method when we are sure JSLA
-                //is loaded and therefore everything else
-                //has been initialized.
-                //jQuery's deferred object takes care of queuing
-                //actions.
+                /*
+                 Only execute method when we are sure JSLA
+                 is loaded and therefore everything else
+                 has been initialized.
+                 jQuery's deferred object takes care of queuing
+                 actions.
+                */
                 _JSLALoader.load().is.done(function(){
                     pluginObj[method].apply(pluginObj, args);
                 });
