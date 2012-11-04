@@ -147,7 +147,8 @@
     //  textColor: '#333333',
     //  fill: '#ff6347',
     //  stroke: '#333333',
-    //  icon: 'urlToIcon'
+    //  icon: 'urlToIcon',
+    //  anchor: {x: 12, y: 18} //an icon 24x36 would result centered
     //}</code></pre>
     H.marker = function(position, markerOptions) {
         var markerListeners = {},
@@ -293,7 +294,8 @@
     //that are not exposed by this plugin need to be
     //performed. Check [api.maps.nokia.com](http://api.maps.nokia.com) for the
     //documentation.
-    //closure should look like this:
+    //
+    //`closure` should look like this:
     //<pre><code>function(map, nokia){
     //    this is the DOM element
     //    map is the JSLA map object
