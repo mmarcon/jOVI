@@ -354,7 +354,7 @@
     _JSLALoader.is = false;
     _JSLALoader.load = function(){
         var head, jsla, load;
-        if(_JSLALoader.is && _JSLALoader.is.state() === 'pending') {
+        if(_JSLALoader.is && _JSLALoader.is.state().match(/pending|resolved/)) {
             /*JSLA loading is already in progress*/
             return this;
         }
@@ -369,7 +369,7 @@
         };
         head = doc.getElementsByTagName('head')[0];
         jsla = doc.createElement('script');
-        jsla.src = 'http://api.maps.nokia.com/2.2.1/jsl.js';
+        jsla.src = 'http://api.maps.nokia.com/2.2.3/jsl.js';
         jsla.type = 'text/javascript';
         jsla.charset = "utf-8";
         jsla.onreadystatechange = function(){
