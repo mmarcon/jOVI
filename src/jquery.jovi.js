@@ -311,6 +311,12 @@
         closure.call(this.element, this.map, _ns);
     };
 
+    H.destroy = function(){
+        this.map.destroy();
+        $.removeData(this.element);
+        $(this.element).empty();
+    };
+
     /*
      Note that this function is private
      and must be called with a jOVI object
