@@ -379,7 +379,7 @@
         jsla.type = 'text/javascript';
         jsla.charset = "utf-8";
         jsla.onreadystatechange = function(){
-            if (jsla.readyState == "loaded" || jsla.readyState == "complete") {
+            if (jsla.readyState.match(/loaded|complete/)){
                 /*The base JSLA has loaded. Trigger load of features*/
                 load();
             }
@@ -416,7 +416,7 @@
                 method = options;
                 /*Get the arguments*/
                 args = Array.prototype.slice.call(args, 1);
-                if (typeof pluginObj[method] !== 'function') {
+                if (!isFunction(pluginObj[method])) {
                     $.error(plugin + '::Method ' + method + ' does not exist');
                 }
                 /*
