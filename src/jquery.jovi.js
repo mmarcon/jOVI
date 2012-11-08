@@ -434,4 +434,4 @@
     };
 
 
-})(jQuery, window, document);
+})(window.jQuery || window.Zepto, window, document);
