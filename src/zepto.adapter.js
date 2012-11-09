@@ -65,4 +65,8 @@
     $.removeData = function(){
         return d.removeData.apply(d, arguments);
     };
+
+    //Export Zepto as jQuery so there is no need
+    //to check for it in the plugin.
+    window.jQuery = $;
 }(Zepto));
