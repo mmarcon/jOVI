@@ -32,6 +32,33 @@
         }
     };
 
+    //### make a map
+    //`$('.selector').jOVI(options);`
+    //
+    //`options` is an object that looks like this:
+    //
+    //<pre><code>{
+    //  enable: [], //An array of components as strings.
+    //  zoom: 12, //a positive integer.
+    //  center: []|{} //An object of type {latitude: Number, longitude: Number}
+    //                 //or array [latitude, longitude]
+    //}</code></pre>
+    //Components for `enable` can be:
+    //
+    // * `'behavior'`: enables map interaction (drag to pan, scroll-wheel to zoom)
+    // * `'zoombar'`: shows a zoom control
+    // * `'scalebar'`: shows a scalebar on the map
+    // * `'typeselector'`: shows a dropdown where the user can select map, satellite, terrain
+    // * `'overview'`: shows a button to activate the overview panel
+    // * `'traffic'`: shows a button to enable the traffic layer
+    // * `'publictransport'`: shows a button to enable the public transport view
+    // * `'positioning'`: shows a button that triggers detection of the user's position
+    // * `'rightclick'`: shows a contextual menu on right click to zoom in and out
+    // * `'contextmenu'`: shows an enriched contextual menu with: current address, zoom in/out, directions
+    //
+    // Default fow `enable` is `['behavior', 'zoombar', 'scalebar', 'typeselector']`.
+    //
+    // Pass `false` for no components.
     function jOVI(element, options){
         this.element = element;
         this.options = $.extend({}, defaults, options);
@@ -228,9 +255,9 @@
         }
         parseKML.call(this, KMLFile, bind(function(kmlManager){
             var resultSet = new _ns.kml.component.KMLResultSet(kmlManager.kmlDocument, this.map);
-            resultSet.addObserver("state", bind(function(resultSet) {
+            resultSet.addObserver('state', bind(function(resultSet) {
                 var container, bbox;
-                if (resultSet.state == "finished") {
+                if (resultSet.state == 'finished') {
                     if(zoomToKML) {
                         /*
                          Then try to zoom the map to the area
@@ -377,7 +404,7 @@
         jsla = doc.createElement('script');
         jsla.src = 'http://api.maps.nokia.com/2.2.3/jsl.js';
         jsla.type = 'text/javascript';
-        jsla.charset = "utf-8";
+        jsla.charset = 'utf-8';
         jsla.onreadystatechange = function(){
             if (jsla.readyState.match(/loaded|complete/)){
                 /*The base JSLA has loaded. Trigger load of features*/
