@@ -1,4 +1,29 @@
 (function($, w, doc){
+    //### How to use jOVI
+    //
+    //Using jOVI in your websites and applications is really easy.
+    //
+    //Include either jQuery or Zepto.JS at the end of your page
+    //
+    //`<script type="text/javascript" src="js/jquery.min.js"></script>`
+    //
+    // or
+    //
+    //`<script type="text/javascript" src="js/zepto.min.js"></script>`
+    //
+    //[Download]() the plugin code, copy it in your project folder and
+    //add the necessary script tags below jQuery or Zepto.JS. **If you are using Zepto.JS**
+    //the you will need to **include the Zepto adapter** before including the plugin.
+    //
+    //<pre><code>&lt;script type="text/javascript" src="js/zepto.adapter.js"&gt;
+    //&lt;!--Only when using Zepto--&gt;
+    //&lt;/script&gt;</code></pre>
+    //
+    //`<script type="text/javascript" src="js/jquery.jovi.js"></script>`
+    //And you are done.
+    //
+    //Make sure the DOM element that will contain the map has the appropriate
+    //size via CSS, e.g. by setting width and height.
     var plugin = 'jOVI',
         version = '0.2.0',
         defaults, H, _ns, _JSLALoader,
@@ -10,6 +35,7 @@
         zoom: 12,
         center: [52.49, 13.37],
         enable: ['behavior', 'zoombar', 'scalebar', 'typeselector'],
+        type: 'map',
         /*All available components. Commented out, saves bytes.*/
         /*all: ['behavior', 'zoombar', 'scalebar', 'typeselector', 'overview', 'traffic', 'publictransport', 'positioning', 'rightclick', 'contextmenu']*/
         marker: {
@@ -32,7 +58,7 @@
         }
     };
 
-    //### make a map
+    //### Make a map
     //`$('.selector').jOVI(options);`
     //
     //`options` is an object that looks like this:
@@ -40,8 +66,13 @@
     //<pre><code>{
     //  enable: [], //An array of components as strings.
     //  zoom: 12, //a positive integer.
-    //  center: []|{} //An object of type {latitude: Number, longitude: Number}
-    //                 //or array [latitude, longitude]
+    //  center: []|{}, //An object of type {latitude: Number, longitude: Number}
+    //                 //or array [latitude, longitude],
+    //  type: 'map', //can be map (the default), satellite, terrain, smart, pt.
+    //               //see type documentation below for details.
+    //  appId: '_peU-uCkp-j8ovkzFGNU', //appId from the Nokia developer website,
+    //  authToken: 'gBoUkAMoxoqIWfxWA5DuMQ' //authenticationToken from the
+    //                                      //Nokia developer website
     //}</code></pre>
     //Components for `enable` can be:
     //
@@ -56,9 +87,14 @@
     // * `'rightclick'`: shows a contextual menu on right click to zoom in and out
     // * `'contextmenu'`: shows an enriched contextual menu with: current address, zoom in/out, directions
     //
-    // Default fow `enable` is `['behavior', 'zoombar', 'scalebar', 'typeselector']`.
-    //
+    // Default for `enable` is `['behavior', 'zoombar', 'scalebar', 'typeselector']`.
     // Pass `false` for no components.
+    //
+    //**Note on `appId` and `authToken`:** the plugin includes by default the credentials
+    //I used development, and it is ok for you to use the same credentials for development
+    //and testing purpose. However you should really register on the Nokia developer website
+    //and get your own. I stringly encourage you to do it especially for production use as
+    //my credentials may unexpectedtly stop working at any time.
     function jOVI(element, options){
         this.element = element;
         this.options = $.extend({}, defaults, options);
@@ -110,9 +146,11 @@
             center: options.center,
             components: components
         });
+
+        this.type(options.type);
     };
 
-    //### center the map
+    //### Center the map
     //`$('.selector').jOVI('center', centerObject);`
     //
     //`centerObject` can be an object of type
@@ -126,7 +164,7 @@
         this.map.setCenter(newCenter);
     };
 
-    //### zoom the map
+    //### Zoom the map
     //`$('.selector').jOVI('zoom', zoomLevel);`
     //
     //`zoomLevel` is a positive integer
@@ -134,7 +172,7 @@
         this.map.set('zoomLevel', newZoomLevel);
     };
 
-    //### set the map type
+    //### Set the map type
     //`$('.selector').jOVI('type', mapType);`
     //
     //`mapType` is a string:
@@ -157,7 +195,7 @@
         map.set('baseMapType', newType);
     };
 
-    //### add markers to the map
+    //### Add markers to the map
     //`$('.selector').jOVI('marker', positionObject, markerOptions);`
     //
     //`positionObject` can be an object of type
@@ -176,6 +214,14 @@
     //  stroke: '#333333',
     //  icon: 'urlToIcon',
     //  anchor: {x: 12, y: 18} //an icon 24x36 would result centered
+    //  click: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  dblclick: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  mousemove: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  mouseover: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  mouseout: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  mouseenter: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  mouseleave: function(event){/*this is the element, event.geo contains the coordinates*/},
+    //  longpress: function(event){/*this is the element, event.geo contains the coordinates*/}
     //}</code></pre>
     H.marker = function(position, markerOptions) {
         var markerListeners = {},
@@ -207,7 +253,7 @@
         }
     };
 
-    //### add bubbles to the map
+    //### Add bubbles to the map
     //`$('.selector').jOVI('bubble', positionObject, bubbleOptions);`
     //
     //`positionObject` can be an object of type
